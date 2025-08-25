@@ -127,7 +127,7 @@ export const TodoForm = () => {
   return (
     <>
       <section style={{ maxWidth: 640, margin: '24px auto' }}>
-        <h2>TODO App</h2>
+        <h2>TODO Form</h2>
 
         <Form
           schema={schema}
