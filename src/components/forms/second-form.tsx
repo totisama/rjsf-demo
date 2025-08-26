@@ -25,11 +25,31 @@ const table1: RJSFSchema & {
     type: 'object',
     required: ['c1', 'c2', 'c3', 'c4', 'c5'],
     properties: {
-      c1: { type: 'number', title: 'C1' },
-      c2: { type: 'number', title: 'C2' },
-      c3: { type: 'number', title: 'C3' },
-      c4: { type: 'number', title: 'C4' },
-      c5: { type: 'number', title: 'C5' },
+      c1: { type: 'number', title: 'C1', minimum: 0 },
+      c2: { type: 'number', title: 'C2', minimum: 0 },
+      c3: { type: 'number', title: 'C3', minimum: 0 },
+      c4: { type: 'number', title: 'C4', minimum: 0 },
+      c5: { type: 'number', title: 'C5', minimum: 0 },
+    },
+  },
+}
+
+const table2: RJSFSchema & {
+  uiType?: string
+} = {
+  uiType: 'table',
+  type: 'array',
+  minItems: 1,
+  items: {
+    title: 'Table 2',
+    type: 'object',
+    required: ['c1', 'c2', 'c3', 'c4', 'c5'],
+    properties: {
+      c1: { type: 'number', title: 'C1', minimum: -25, maximum: -5 },
+      c2: { type: 'number', title: 'C2', minimum: -25, maximum: -5 },
+      c3: { type: 'number', title: 'C3', minimum: -25, maximum: -5 },
+      c4: { type: 'number', title: 'C4', minimum: -25, maximum: -5 },
+      c5: { type: 'number', title: 'C5', minimum: -25, maximum: -5 },
     },
   },
 }
@@ -50,6 +70,7 @@ const schema: RJSFSchema = {
       },
     },
     table1,
+    table2,
   },
 }
 
@@ -61,6 +82,12 @@ const uiSchema: UiSchema = {
   num2: { 'ui:placeholder': 'Enter a number...' },
 
   table1: {
+    'ui:field': 'TableField',
+    'ui:options': {
+      columnLabels: ['C1', 'C2', 'C3', 'C4', 'C5'],
+    },
+  },
+  table2: {
     'ui:field': 'TableField',
     'ui:options': {
       columnLabels: ['C1', 'C2', 'C3', 'C4', 'C5'],
