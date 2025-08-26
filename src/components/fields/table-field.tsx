@@ -62,12 +62,21 @@ export const TableField = (props: FieldProps) => {
   const handleCellBlur = (rowIndex: number, columnKey: string) => {
     const current = rows[rowIndex]?.[columnKey]
 
-    if (current !== undefined && current <= 0) {
+    if (!current) return
+
+    const colSchema = (properties as Record<string, RJSFSchema>)[columnKey]
+    const min = colSchema.minimum
+    const max = colSchema.maximum
+
+    const belowMin = typeof min === 'number' && current < min
+    const aboveMax = typeof max === 'number' && current > max
+
+    if (belowMin || aboveMax) {
       const updatedRows = rows.map((row, i) =>
         i === rowIndex ? { ...row } : row
       )
 
-      updatedRows[rowIndex][columnKey] = 0
+      updatedRows[rowIndex][columnKey] = undefined
       onChange(updatedRows)
     }
   }
