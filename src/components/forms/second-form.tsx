@@ -4,6 +4,7 @@ import validator from '@rjsf/validator-ajv6'
 import type { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { FieldTemplate } from '../templates/field-template'
 import { TableField } from '../fields/table-field'
+import type { TableSchema } from '../../types'
 
 type Form2Values = {
   text1?: string
@@ -34,9 +35,7 @@ const table1: RJSFSchema & {
   },
 }
 
-const table2: RJSFSchema & {
-  uiType?: string
-} = {
+const table2: TableSchema = {
   uiType: 'table',
   type: 'array',
   minItems: 1,

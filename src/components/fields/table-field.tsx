@@ -1,4 +1,5 @@
 import type { ErrorSchema, FieldProps, RJSFSchema, UiSchema } from '@rjsf/utils'
+import type { TableSchema } from '../../types'
 
 interface TableUiOptions {
   columnLabels?: string[]
@@ -6,7 +7,7 @@ interface TableUiOptions {
 
 type TableRow = Record<string, number | undefined>
 
-function isObjectSchema(x: unknown): x is RJSFSchema {
+function isObjectSchema(x: unknown): x is TableSchema {
   return typeof x === 'object' && x !== null
 }
 
