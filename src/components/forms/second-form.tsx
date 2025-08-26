@@ -53,7 +53,30 @@ const table2: TableSchema = {
   },
 }
 
-const schema: RJSFSchema = {
+const table3: TableSchema = {
+  uiType: 'table',
+  xTableBehavior: {
+    mode: 'columnsSum',
+    requiredRows: [0, 1, 2],
+    fixedRows: true,
+  },
+  type: 'array',
+  minItems: 4,
+  items: {
+    title: 'Table 3',
+    type: 'object',
+    required: ['c1', 'c2', 'c3', 'c4', 'c5'],
+    properties: {
+      c1: { type: 'number', title: 'C1' },
+      c2: { type: 'number', title: 'C2' },
+      c3: { type: 'number', title: 'C3' },
+      c4: { type: 'number', title: 'C4' },
+      c5: { type: 'number', title: 'C5' },
+    },
+  },
+}
+
+const schema: TableSchema = {
   title: 'Second Form',
   type: 'object',
   properties: {
@@ -70,6 +93,7 @@ const schema: RJSFSchema = {
     },
     table1,
     table2,
+    table3,
   },
 }
 
@@ -87,6 +111,12 @@ const uiSchema: UiSchema = {
     },
   },
   table2: {
+    'ui:field': 'TableField',
+    'ui:options': {
+      columnLabels: ['C1', 'C2', 'C3', 'C4', 'C5'],
+    },
+  },
+  table3: {
     'ui:field': 'TableField',
     'ui:options': {
       columnLabels: ['C1', 'C2', 'C3', 'C4', 'C5'],

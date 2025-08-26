@@ -1,5 +1,5 @@
 import type { ErrorSchema, FieldProps, RJSFSchema, UiSchema } from '@rjsf/utils'
-import type { TableSchema } from '../../types'
+import type { TableBehavior, TableSchema } from '../../types'
 
 interface TableUiOptions {
   columnLabels?: string[]
@@ -21,9 +21,13 @@ export const TableField = (props: FieldProps) => {
     return <div>Invalid table schema</div>
   }
 
-  const properties = (schema.items.properties ?? {}) as RJSFSchema & {
-    uiType?: string
-  }
+  const properties = (schema.items.properties ?? {}) as Record<
+    string,
+    RJSFSchema
+  >
+  const tableBehavior =
+    (schema as unknown as { xTableBehavior?: TableBehavior }).xTableBehavior ??
+    {}
   const columnKeys = Object.keys(properties)
   const uiOptionsTyped: TableUiOptions =
     ((uiSchema as UiSchema)?.['ui:options'] as TableUiOptions) ?? {}
@@ -170,22 +174,24 @@ export const TableField = (props: FieldProps) => {
                       </td>
                     )
                   })}
-                  <td style={{ padding: 6, textAlign: 'right' }}>
-                    <button
-                      type="button"
-                      onClick={() => removeRow(rIdx)}
-                      disabled={
-                        !isEditable || rows.length <= (schema.minItems ?? 0)
-                      }
-                      style={{
-                        padding: '6px 10px',
-                        borderRadius: 8,
-                        border: '1px solid #e2e8f0',
-                      }}
-                    >
-                      Remove
-                    </button>
-                  </td>
+                  {!tableBehavior.fixedRows && (
+                    <td style={{ padding: 6, textAlign: 'right' }}>
+                      <button
+                        type="button"
+                        onClick={() => removeRow(rIdx)}
+                        disabled={
+                          !isEditable || rows.length <= (schema.minItems ?? 0)
+                        }
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: 8,
+                          border: '1px solid #e2e8f0',
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -193,19 +199,21 @@ export const TableField = (props: FieldProps) => {
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={addRow}
-        disabled={!isEditable}
-        style={{
-          marginTop: 10,
-          padding: '6px 10px',
-          borderRadius: 8,
-          border: '1px solid #cbd5e1',
-        }}
-      >
-        Add row
-      </button>
+      {!tableBehavior.fixedRows && (
+        <button
+          type="button"
+          onClick={addRow}
+          disabled={!isEditable}
+          style={{
+            marginTop: 10,
+            padding: '6px 10px',
+            borderRadius: 8,
+            border: '1px solid #cbd5e1',
+          }}
+        >
+          Add row
+        </button>
+      )}
     </div>
   )
 }
