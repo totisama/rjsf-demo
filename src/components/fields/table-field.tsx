@@ -131,39 +131,44 @@ export const TableField = (props: FieldProps) => {
             <tbody>
               {rows.map((row, rIdx) => (
                 <tr key={rIdx}>
-                  {columnKeys.map((colKey) => (
-                    <td key={colKey} style={{ padding: 6 }}>
-                      <input
-                        type="number"
-                        value={row[colKey] ?? ''}
-                        onChange={(e) => {
-                          handleCellChange(rIdx, colKey, e.target.value)
-                        }}
-                        onBlur={() => {
-                          handleCellBlur(rIdx, colKey)
-                        }}
-                        disabled={!isEditable}
-                        min={0}
-                        style={{
-                          width: '100%',
-                          padding: 6,
-                          border: '1px solid #cbd5e1',
-                          borderRadius: 8,
-                        }}
-                      />
-                      {cellHasError(rIdx, colKey) && (
-                        <div
-                          style={{
-                            color: '#ef4444',
-                            fontSize: 11,
-                            marginTop: 4,
+                  {columnKeys.map((colKey) => {
+                    const colSchema = properties[colKey] as RJSFSchema
+
+                    return (
+                      <td key={colKey} style={{ padding: 6 }}>
+                        <input
+                          type="number"
+                          value={row[colKey] ?? ''}
+                          onChange={(e) => {
+                            handleCellChange(rIdx, colKey, e.target.value)
                           }}
-                        >
-                          {getErrorsForCell(rIdx, colKey)[0]}
-                        </div>
-                      )}
-                    </td>
-                  ))}
+                          onBlur={() => {
+                            handleCellBlur(rIdx, colKey)
+                          }}
+                          disabled={!isEditable}
+                          min={colSchema.minimum}
+                          max={colSchema.maximum}
+                          style={{
+                            width: '100%',
+                            padding: 6,
+                            border: '1px solid #cbd5e1',
+                            borderRadius: 8,
+                          }}
+                        />
+                        {cellHasError(rIdx, colKey) && (
+                          <div
+                            style={{
+                              color: '#ef4444',
+                              fontSize: 11,
+                              marginTop: 4,
+                            }}
+                          >
+                            {getErrorsForCell(rIdx, colKey)[0]}
+                          </div>
+                        )}
+                      </td>
+                    )
+                  })}
                   <td style={{ padding: 6, textAlign: 'right' }}>
                     <button
                       type="button"
