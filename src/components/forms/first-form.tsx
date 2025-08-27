@@ -5,6 +5,7 @@ import type { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { FieldTemplate } from '../templates/field-template'
 import { NumberBlurClearWidget } from '../widgets/number-blur-clear-widget'
 import { TotalWidget } from '../widgets/total-widget'
+import { DebugPanel } from '../debug-panel'
 
 export type Form1Values = {
   a?: number
@@ -41,10 +42,10 @@ const uiSchema: UiSchema = {
 }
 
 const defaultForm: Form1Values = {
-  a: 0,
-  b: 0,
-  c: 0,
-  total: 0,
+  a: undefined,
+  b: undefined,
+  c: undefined,
+  total: undefined,
 }
 
 export const FirstForm = () => {

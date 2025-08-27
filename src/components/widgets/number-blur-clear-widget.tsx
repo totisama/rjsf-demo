@@ -11,7 +11,7 @@ export const NumberBlurClearWidget = (props: WidgetProps) => {
 
   const handleBlur = () => {
     if (value < 0) {
-      onChange(0)
+      onChange(undefined)
     }
 
     onBlur(id, value)
