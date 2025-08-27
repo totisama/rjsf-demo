@@ -4,3 +4,34 @@
   padding: 2rem;
   text-align: center;
 }
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 0;
+  background: black;
+}
+
+.content {
+  padding-top: 64px;
+}
+
+.tabs {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.tab {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+}
+
+.tab.active {
+  background: #2563eb;
+  color: #fff;
+}
