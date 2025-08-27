@@ -10,6 +10,7 @@ import { EstimateHoursWidget } from '../widgets/estimate-hours-widget'
 import { PriorityWidget } from '../widgets/priority-widget'
 import { KeyValueField } from '../fields/key-value-field'
 import { colors } from '../../constants'
+import { DebugPanel } from '../debug-panel'
 
 type Priority = 'low' | 'medium' | 'high'
 
@@ -255,20 +256,7 @@ export const TodoForm = () => {
         </div>
       </section>
 
-      <pre
-        style={{
-          padding: 12,
-          marginTop: 12,
-          background: '#0f172a',
-          color: '#e2e8f0',
-          borderRadius: 15,
-          position: 'absolute',
-          top: 24,
-          left: 24,
-        }}
-      >
-        {JSON.stringify(formData, null, 2)}
-      </pre>
+      <DebugPanel data={formData} />
     </>
   )
 }

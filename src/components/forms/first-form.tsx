@@ -76,20 +76,7 @@ export const FirstForm = () => {
         />
       </section>
 
-      <pre
-        style={{
-          padding: 12,
-          marginTop: 12,
-          background: '#0f172a',
-          color: '#e2e8f0',
-          borderRadius: 15,
-          position: 'absolute',
-          top: 24,
-          left: 24,
-        }}
-      >
-        {JSON.stringify(formData, null, 2)}
-      </pre>
+      <DebugPanel data={formData} />
     </>
   )
 }

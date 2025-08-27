@@ -5,6 +5,7 @@ import type { RJSFSchema, UiSchema } from '@rjsf/utils'
 import { FieldTemplate } from '../templates/field-template'
 import { TableField } from '../fields/table-field'
 import type { TableSchema } from '../../types'
+import { DebugPanel } from '../debug-panel'
 
 type Form2Values = {
   basic?: {
@@ -141,20 +142,8 @@ export const SecondForm = () => {
           onSubmit={handleSubmit}
         />
       </section>
-      <pre
-        style={{
-          padding: 12,
-          marginTop: 12,
-          background: '#0f172a',
-          color: '#e2e8f0',
-          borderRadius: 15,
-          position: 'absolute',
-          top: 24,
-          left: 24,
-        }}
-      >
-        {JSON.stringify(formData, null, 2)}
-      </pre>
+
+      <DebugPanel data={formData} />
     </>
   )
 }
