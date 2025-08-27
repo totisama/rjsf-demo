@@ -13,14 +13,14 @@ function isObjectSchema(x: unknown): x is TableSchema {
 
 export const TableField = (props: FieldProps) => {
   const { formData, onChange, disabled, readonly, schema, uiSchema } = props
-  const rows = Array.isArray(formData)
-    ? (formData as Array<Record<string, number | undefined>>)
-    : []
 
   if (!isObjectSchema(schema.items)) {
     return <div>Invalid table schema</div>
   }
 
+  const rows = Array.isArray(formData)
+    ? (formData as Array<Record<string, number | undefined>>)
+    : []
   const properties = (schema.items.properties ?? {}) as Record<
     string,
     RJSFSchema
@@ -28,6 +28,7 @@ export const TableField = (props: FieldProps) => {
   const tableBehavior =
     (schema as unknown as { xTableBehavior?: TableBehavior }).xTableBehavior ??
     {}
+
   const columnKeys = Object.keys(properties)
   const uiOptionsTyped: TableUiOptions =
     ((uiSchema as UiSchema)?.['ui:options'] as TableUiOptions) ?? {}
@@ -38,6 +39,9 @@ export const TableField = (props: FieldProps) => {
       ? uiOptionsTyped.columnLabels
       : columnKeys.map((key) => properties[key]?.title ?? key)
 
+  const rowsCount = rows.length
+  const isFixed = !!tableBehavior.fixedRows
+  const isColumnsSum = tableBehavior.mode === 'columnsSum'
   const isEditable = !(disabled || readonly)
 
   const toNumberOrUndefined = (value: string): number | undefined => {
@@ -61,7 +65,7 @@ export const TableField = (props: FieldProps) => {
       }
     })
 
-    onChange(nextRows)
+    onChange(isColumnsSum ? computeLastRow(nextRows) : nextRows)
   }
 
   const handleCellBlur = (rowIndex: number, columnKey: string) => {
@@ -82,7 +86,7 @@ export const TableField = (props: FieldProps) => {
       )
 
       updatedRows[rowIndex][columnKey] = undefined
-      onChange(updatedRows)
+      onChange(isColumnsSum ? computeLastRow(updatedRows) : updatedRows)
     }
   }
 
@@ -94,6 +98,28 @@ export const TableField = (props: FieldProps) => {
 
   const removeRow = (rowIndex: number) => {
     onChange(rows.filter((_, i) => i !== rowIndex))
+  }
+
+  const computeLastRow = (currentRows: TableRow[]): TableRow[] => {
+    if (!isColumnsSum) return currentRows
+
+    const lastIndex = currentRows.length - 1
+    const sumRow: TableRow = {}
+
+    columnKeys.forEach((key) => {
+      let sum = 0
+
+      currentRows.forEach((row, idx) => {
+        if (idx !== lastIndex) {
+          sum += Number(row[key] ?? 0)
+        }
+      })
+      sumRow[key] = sum
+    })
+
+    return currentRows.map((row, idx) =>
+      idx === lastIndex ? { ...sumRow } : row
+    )
   }
 
   const getErrorsForCell = (rowIndex: number, columnKey: string): string[] => {
@@ -114,7 +140,7 @@ export const TableField = (props: FieldProps) => {
   return (
     <div>
       <div style={{ overflowX: 'auto' }}>
-        {rows.length > 0 && (
+        {rowsCount > 0 && (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
@@ -138,6 +164,7 @@ export const TableField = (props: FieldProps) => {
                 <tr key={rIdx}>
                   {columnKeys.map((colKey) => {
                     const colSchema = properties[colKey] as RJSFSchema
+                    const isComputedRow = isColumnsSum && rIdx === rowsCount - 1
 
                     return (
                       <td key={colKey} style={{ padding: 6 }}>
@@ -150,7 +177,7 @@ export const TableField = (props: FieldProps) => {
                           onBlur={() => {
                             handleCellBlur(rIdx, colKey)
                           }}
-                          disabled={!isEditable}
+                          disabled={!isEditable || isComputedRow}
                           min={colSchema.minimum}
                           max={colSchema.maximum}
                           style={{
@@ -174,13 +201,13 @@ export const TableField = (props: FieldProps) => {
                       </td>
                     )
                   })}
-                  {!tableBehavior.fixedRows && (
+                  {!isFixed && (
                     <td style={{ padding: 6, textAlign: 'right' }}>
                       <button
                         type="button"
                         onClick={() => removeRow(rIdx)}
                         disabled={
-                          !isEditable || rows.length <= (schema.minItems ?? 0)
+                          !isEditable || rowsCount <= (schema.minItems ?? 0)
                         }
                         style={{
                           padding: '6px 10px',
@@ -199,7 +226,7 @@ export const TableField = (props: FieldProps) => {
         )}
       </div>
 
-      {!tableBehavior.fixedRows && (
+      {!isFixed && (
         <button
           type="button"
           onClick={addRow}
