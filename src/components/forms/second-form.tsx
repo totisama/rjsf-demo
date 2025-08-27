@@ -22,11 +22,11 @@ type Form2Values = {
 const table1: RJSFSchema & {
   uiType?: string
 } = {
+  title: 'Table 1',
   uiType: 'table',
   type: 'array',
   minItems: 1,
   items: {
-    title: 'Table 1',
     type: 'object',
     required: ['c1', 'c2', 'c3', 'c4', 'c5'],
     properties: {
@@ -40,11 +40,11 @@ const table1: RJSFSchema & {
 }
 
 const table2: TableSchema = {
+  title: 'Table 2',
   uiType: 'table',
   type: 'array',
   minItems: 1,
   items: {
-    title: 'Table 2',
     type: 'object',
     required: ['c1', 'c2', 'c3', 'c4', 'c5'],
     properties: {
@@ -58,6 +58,7 @@ const table2: TableSchema = {
 }
 
 const table3: TableSchema = {
+  title: 'Table 3',
   uiType: 'table',
   xTableBehavior: {
     mode: 'columnsSum',
@@ -66,7 +67,6 @@ const table3: TableSchema = {
   type: 'array',
   minItems: 4,
   items: {
-    title: 'Table 3',
     type: 'object',
     required: ['c1', 'c2', 'c3', 'c4', 'c5'],
     properties: {

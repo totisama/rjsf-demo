@@ -138,7 +138,8 @@ export const TableField = (props: FieldProps) => {
   }
 
   return (
-    <div>
+    <fieldset>
+      {schema.title && <legend>{schema.title}</legend>}
       <div style={{ overflowX: 'auto' }}>
         {rowsCount > 0 && (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -241,6 +242,6 @@ export const TableField = (props: FieldProps) => {
           Add row
         </button>
       )}
-    </div>
+    </fieldset>
   )
 }
