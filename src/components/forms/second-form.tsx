@@ -7,12 +7,16 @@ import { TableField } from '../fields/table-field'
 import type { TableSchema } from '../../types'
 
 type Form2Values = {
-  text1?: string
-  text2?: string
-  text3?: string
-  num1?: number
-  num2?: number
+  basic?: {
+    text1?: string
+    text2?: string
+    text3?: string
+    num1?: number
+    num2?: number
+  }
   table1?: Array<{ c1: number; c2: number; c3: number; c4: number; c5: number }>
+  table2?: Array<{ c1: number; c2: number; c3: number; c4: number; c5: number }>
+  table3?: Array<{ c1: number; c2: number; c3: number; c4: number; c5: number }>
 }
 
 const table1: RJSFSchema & {
@@ -57,7 +61,6 @@ const table3: TableSchema = {
   uiType: 'table',
   xTableBehavior: {
     mode: 'columnsSum',
-    requiredRows: [0, 1, 2],
     fixedRows: true,
   },
   type: 'array',
@@ -106,21 +109,12 @@ const uiSchema: UiSchema = {
 
   table1: {
     'ui:field': 'TableField',
-    'ui:options': {
-      columnLabels: ['C1', 'C2', 'C3', 'C4', 'C5'],
-    },
   },
   table2: {
     'ui:field': 'TableField',
-    'ui:options': {
-      columnLabels: ['C1', 'C2', 'C3', 'C4', 'C5'],
-    },
   },
   table3: {
     'ui:field': 'TableField',
-    'ui:options': {
-      columnLabels: ['C1', 'C2', 'C3', 'C4', 'C5'],
-    },
   },
 }
 

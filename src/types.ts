@@ -7,6 +7,5 @@ export interface TableSchema extends RJSFSchema {
 
 export interface TableBehavior {
   mode?: 'columnsSum'
-  requiredRows?: number[]
   fixedRows?: boolean
 }
