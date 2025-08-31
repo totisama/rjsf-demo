@@ -1,0 +1,691 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "appCompatibleVersion": "1.0.6",
+  "appDownloadLink": "https://reporter.orbitmi.cloud/orbit-reporter.html",
+  "reportType": "Event",
+  "reportTitle": "Event Report",
+  "reportSubType": "SecondaryDefault",
+  "definitions": {
+    "oilItem": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5000
+    },
+    "oilRow": {
+      "type": "object",
+      "properties": {
+        "vlsfo": {
+          "fuelType": "VlsFo",
+          "$ref": "#/definitions/oilItem"
+        },
+        "bvlsfo": {
+          "fuelType": "BioVlsFo",
+          "$ref": "#/definitions/oilItem"
+        },
+        "lsmgo": {
+          "fuelType": "LsGo",
+          "$ref": "#/definitions/oilItem"
+        }
+      },
+      "anyOf": [
+        { "required": ["vlsfo"] },
+        { "required": ["bvlsfo"] },
+        { "required": ["lsmgo"] }
+      ]
+    },
+    "consumptionItem": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "consumptionRow": {
+      "type": "object",
+      "properties": {
+        "vlsfo": {
+          "fuelType": "VlsFo",
+          "$ref": "#/definitions/consumptionItem"
+        },
+        "bvlsfo": {
+          "fuelType": "BioVlsFo",
+          "$ref": "#/definitions/consumptionItem"
+        },
+        "lsmgo": {
+          "fuelType": "LsGo",
+          "$ref": "#/definitions/consumptionItem"
+        }
+      },
+      "anyOf": [
+        { "required": ["vlsfo"] },
+        { "required": ["bvlsfo"] },
+        { "required": ["lsmgo"] }
+      ]
+    },
+    "dateTimeUtc": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "title": "Date",
+          "type": "string",
+          "format": "date"
+        },
+        "time": {
+          "title": "Time",
+          "type": "string",
+          "minimum": 0,
+          "maximum": 2359
+        },
+        "utc": {
+          "title": "UTC",
+          "type": "string",
+          "oneOf": [
+            {
+              "title": "-13",
+              "const": "-13:00"
+            },
+            {
+              "title": "-12",
+              "const": "-12:00"
+            },
+            {
+              "title": "-11",
+              "const": "-11:00"
+            },
+            {
+              "title": "-10",
+              "const": "-10:00"
+            },
+            {
+              "title": "-09:30",
+              "const": "-09:30"
+            },
+            {
+              "title": "-09",
+              "const": "-09:00"
+            },
+            {
+              "title": "-08",
+              "const": "-08:00"
+            },
+            {
+              "title": "-07",
+              "const": "-07:00"
+            },
+            {
+              "title": "-06",
+              "const": "-06:00"
+            },
+            {
+              "title": "-05",
+              "const": "-05:00"
+            },
+            {
+              "title": "-04",
+              "const": "-04:00"
+            },
+            {
+              "title": "-03",
+              "const": "-03:00"
+            },
+            {
+              "title": "-02",
+              "const": "-02:00"
+            },
+            {
+              "title": "-01",
+              "const": "-01:00"
+            },
+            {
+              "title": "+00",
+              "const": "+00:00"
+            },
+            {
+              "title": "+01",
+              "const": "+01:00"
+            },
+            {
+              "title": "+02",
+              "const": "+02:00"
+            },
+            {
+              "title": "+03",
+              "const": "+03:00"
+            },
+            {
+              "title": "+04",
+              "const": "+04:00"
+            },
+            {
+              "title": "+05",
+              "const": "+05:00"
+            },
+            {
+              "title": "+05:30",
+              "const": "+05:30"
+            },
+            {
+              "title": "+06",
+              "const": "+06:00"
+            },
+            {
+              "title": "+07",
+              "const": "+07:00"
+            },
+            {
+              "title": "+08",
+              "const": "+08:00"
+            },
+            {
+              "title": "+09",
+              "const": "+09:00"
+            },
+            {
+              "title": "+09:30",
+              "const": "+09:30"
+            },
+            {
+              "title": "+10",
+              "const": "+10:00"
+            },
+            {
+              "title": "+11",
+              "const": "+11:00"
+            },
+            {
+              "title": "+12",
+              "const": "+12:00"
+            },
+            {
+              "title": "+13",
+              "const": "+13:00"
+            },
+            {
+              "title": "+14",
+              "const": "+14:00"
+            }
+          ]
+        }
+      },
+      "required": ["date", "time", "utc"]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "commonInfo": {
+      "title": "",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "vesselName": {
+          "title": "Vessel name",
+          "type": "string",
+          "prepopulated": true
+        },
+        "imo": {
+          "title": "IMO",
+          "type": "integer",
+          "pattern": "^\\d{7}$",
+          "prepopulated": true,
+          "message": {
+            "pattern": "Please enter a valid IMO. 7 digits only"
+          }
+        },
+        "callSign": {
+          "title": "Call sign",
+          "type": "string",
+          "prepopulated": true
+        },
+        "email": {
+          "title": "Vessel Email",
+          "type": "string",
+          "uiType": "email"
+        },
+        "voyageNumber": {
+          "title": "Voyage Number",
+          "type": "integer",
+          "maxLength": 10,
+          "prepopulated": true,
+          "message": {
+            "pattern": "Please enter a valid Voyage Number (1–10 letters or digits)."
+          }
+        },
+        "vesselCondition": {
+          "title": "Vessel condition",
+          "type": "string",
+          "uiType": "radio",
+          "prepopulated": true,
+          "oneOf": [
+            {
+              "const": "Ballast",
+              "title": "Ballast"
+            },
+            {
+              "const": "Laden",
+              "title": "Laden"
+            }
+          ]
+        },
+        "vesselStatus": {
+          "title": "Vessel status",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "AtSea",
+              "title": "At sea"
+            },
+            {
+              "const": "Drifting",
+              "title": "Drifting"
+            },
+            {
+              "const": "Anchored",
+              "title": "Anchored"
+            },
+            {
+              "const": "Maneuvering",
+              "title": "Maneuvering"
+            },
+            {
+              "const": "AtBerth",
+              "title": "At berth"
+            },
+            {
+              "const": "InCanal",
+              "title": "In canal"
+            },
+            {
+              "const": "Idle",
+              "title": "Idle"
+            }
+          ]
+        }
+      },
+      "required": [
+        "vesselName",
+        "imo",
+        "callSign",
+        "voyageNumber",
+        "email",
+        "vesselCondition",
+        "vesselStatus"
+      ]
+    },
+    "consumptionFromNoonToEvent": {
+      "title": "Consumption since last event",
+      "type": "object",
+      "uiType": "consumption",
+      "flatType": "table",
+      "prepopulated": true,
+      "properties": {
+        "mainEngineAtSea": {
+          "title": "Main Engine at Sea",
+          "consumptionType": "MainEngineAtSea",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "auxEngineAtSea": {
+          "title": "Aux. Engine at Sea",
+          "consumptionType": "AuxEngineAtSea",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "mainEngineAtPortAnchorage": {
+          "title": "Main Engine at Port Anchorage",
+          "consumptionType": "MainEngineAtPort",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "auxEngineAtPortAnchorage": {
+          "title": "Aux. Engine at Port Anchorage",
+          "consumptionType": "AuxEngineAtPort",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "inertGas": {
+          "title": "Inert Gas",
+          "consumptionType": "InertGas",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "boiler": {
+          "title": "Boiler",
+          "consumptionType": "Boiler",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "incinerator": {
+          "title": "Incinerator",
+          "consumptionType": "Incinerator",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "tankCleaning": {
+          "title": "Tank Cleaning",
+          "consumptionType": "TankCleaning",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "cargoCirculation": {
+          "title": "Cargo Circulation",
+          "consumptionType": "CargoCirculation",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "ballastExchange": {
+          "title": "Ballast Exchange",
+          "consumptionType": "BallastExchange",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "electricalPower": {
+          "title": "Electrical Power",
+          "consumptionType": "ElectricalPower",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "dynamicPositioning": {
+          "title": "Dynamic Positioning",
+          "consumptionType": "DynamicPositioningFuel",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "cargoHeatingBoilerOilFired": {
+          "title": "Cargo Heating (boiler oil-fired)",
+          "consumptionType": "CargoHeatingBoilerOilFired",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "cargoHeatingBoilerNonOilFired": {
+          "title": "Cargo Heating (boiler non oil-fired)",
+          "consumptionType": "CargoHeatingBoilerNonOilFired",
+          "$ref": "#/definitions/consumptionRow"
+        }
+      },
+      "anyOf": [
+        { "required": ["mainEngineAtSea"] },
+        { "required": ["auxEngineAtSea"] },
+        { "required": ["mainEngineAtPortAnchorage"] },
+        { "required": ["auxEngineAtPortAnchorage"] },
+        { "required": ["inertGas"] },
+        { "required": ["boiler"] },
+        { "required": ["incinerator"] },
+        { "required": ["tankCleaning"] },
+        { "required": ["cargoCirculation"] },
+        { "required": ["ballastExchange"] },
+        { "required": ["electricalPower"] },
+        { "required": ["dynamicPositioning"] },
+        { "required": ["cargoHeatingBoilerOilFired"] },
+        { "required": ["cargoHeatingBoilerNonOilFired"] }
+      ]
+    },
+    "event": {
+      "title": "Event",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "eventDate": {
+          "title": "Event date (LT)",
+          "uiType": "dateTimeUtc",
+          "$ref": "#/definitions/dateTimeUtc",
+          "prepopulatedWithTodaysDate": true
+        },
+        "eventType": {
+          "title": "Event type",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "CommencedStoppage",
+              "title": "Commenced stoppage"
+            },
+            {
+              "const": "ResumedVoyage",
+              "title": "Resumed voyage"
+            },
+            {
+              "const": "EngineFailure",
+              "title": "Engine slowdown by accident"
+            },
+            {
+              "const": "EncounteringHeavyWeather",
+              "title": "Encountering heavy weather"
+            },
+            {
+              "const": "ChangedDestination",
+              "title": "Changed destination"
+            },
+            {
+              "const": "DeviationFromRoute",
+              "title": "Deviation from route"
+            },
+            {
+              "const": "Idle",
+              "title": "Idle"
+            },
+            {
+              "const": "EnteringSpecialArea",
+              "title": "Entering special area Ice, HRA, ECA"
+            },
+            {
+              "const": "LeavingSpecialArea",
+              "title": "Leaving special area Ice, HRA, ECA"
+            },
+            {
+              "const": "Damages",
+              "title": "Damage on vessel or equipment"
+            },
+            {
+              "const": "Detours",
+              "title": "Detours for security safety or saving life at sea"
+            }
+          ]
+        },
+        "position": {
+          "title": "Position lat/long",
+          "type": "object",
+          "uiType": "position",
+          "prepopulated": true,
+          "properties": {
+            "latitude": {
+              "type": "object",
+              "title": "Position - Latitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 89
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "const": "North",
+                      "title": "N"
+                    },
+                    {
+                      "const": "South",
+                      "title": "S"
+                    }
+                  ]
+                }
+              },
+              "required": ["degrees", "minutes", "seconds", "direction"]
+            },
+            "longitude": {
+              "type": "object",
+              "title": "Position - Longitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 179
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "const": "East",
+                      "title": "E"
+                    },
+                    {
+                      "const": "West",
+                      "title": "W"
+                    }
+                  ]
+                }
+              },
+              "required": ["degrees", "minutes", "seconds", "direction"]
+            }
+          },
+          "required": ["latitude", "longitude"]
+        },
+        "instructedSpeed": {
+          "title": "Instructed speed (kn)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 30,
+          "multipleOf": 0.5
+        }
+      },
+      "required": [
+        "eventDate",
+        "eventType",
+        "position"
+      ]
+    },
+    "consumptionDuringStoppage": {
+      "title": "Consumption during reported event",
+      "type": "object",
+      "uiType": "consumption",
+      "flatType": "table",
+      "prepopulated": true,
+      "properties": {
+        "mainEngineAtSea": {
+          "title": "Main Engine at Sea",
+          "consumptionType": "MainEngineAtSea",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "auxEngineAtSea": {
+          "title": "Aux. Engine at Sea",
+          "consumptionType": "AuxEngineAtSea",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "mainEngineAtPortAnchorage": {
+          "title": "Main Engine at Port Anchorage",
+          "consumptionType": "MainEngineAtPort",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "auxEngineAtPortAnchorage": {
+          "title": "Aux. Engine at Port Anchorage",
+          "consumptionType": "AuxEngineAtPort",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "inertGas": {
+          "title": "Inert Gas",
+          "consumptionType": "InertGas",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "boiler": {
+          "title": "Boiler",
+          "consumptionType": "Boiler",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "incinerator": {
+          "title": "Incinerator",
+          "consumptionType": "Incinerator",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "tankCleaning": {
+          "title": "Tank Cleaning",
+          "consumptionType": "TankCleaning",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "cargoCirculation": {
+          "title": "Cargo Circulation",
+          "consumptionType": "CargoCirculation",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "ballastExchange": {
+          "title": "Ballast Exchange",
+          "consumptionType": "BallastExchange",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "electricalPower": {
+          "title": "Electrical Power",
+          "consumptionType": "ElectricalPower",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "dynamicPositioning": {
+          "title": "Dynamic Positioning",
+          "consumptionType": "DynamicPositioningFuel",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "cargoHeatingBoilerOilFired": {
+          "title": "Cargo Heating (boiler oil-fired)",
+          "consumptionType": "CargoHeatingBoilerOilFired",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "cargoHeatingBoilerNonOilFired": {
+          "title": "Cargo Heating (boiler non oil-fired)",
+          "consumptionType": "CargoHeatingBoilerNonOilFired",
+          "$ref": "#/definitions/consumptionRow"
+        }
+      },
+      "anyOf": [
+        { "required": ["mainEngineAtSea"] },
+        { "required": ["auxEngineAtSea"] },
+        { "required": ["mainEngineAtPortAnchorage"] },
+        { "required": ["auxEngineAtPortAnchorage"] },
+        { "required": ["inertGas"] },
+        { "required": ["boiler"] },
+        { "required": ["incinerator"] },
+        { "required": ["tankCleaning"] },
+        { "required": ["cargoCirculation"] },
+        { "required": ["ballastExchange"] },
+        { "required": ["electricalPower"] },
+        { "required": ["dynamicPositioning"] },
+        { "required": ["cargoHeatingBoilerOilFired"] },
+        { "required": ["cargoHeatingBoilerNonOilFired"] }
+      ]
+    },
+    "bunkerDatas": {
+      "title": "Bunker ROB",
+      "type": "object",
+      "uiType": "bunkerTable",
+      "flatType": "table",
+      "properties": {
+        "totalRobPerBunkerGrade": {
+          "title": "Total ROB per bunker grade (mt)",
+          "prepopulated": true,
+          "bunkerDataType": "Rob",
+          "$ref": "#/definitions/oilRow"
+        }
+      },
+      "required": ["totalRobPerBunkerGrade"]
+    },
+    "remarks": {
+      "title": "Report remarks",
+      "type": "string",
+      "uiType": "remarks",
+      "flatType": "remarks",
+      "maximum": 200
+    }
+  },
+  "required": ["commonInfo", "event", "consumptionFromNoonToEvent", "consumptionDuringStoppage", "bunkerDatas"]
+}
+
