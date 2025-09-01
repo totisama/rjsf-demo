@@ -37,6 +37,10 @@ export const DynamicForm = ({
       templates={{
         FieldTemplate,
       }}
+      experimental_defaultFormStateBehavior={{
+        emptyObjectFields: 'skipEmptyDefaults',
+        constAsDefaults: 'skipOneOf',
+      }}
       showErrorList={false}
       onChange={(e: IChangeEvent) => onChange?.(e.formData)}
       onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
