@@ -14,6 +14,7 @@ export const DebugPanel = ({ data }: DebugPanelProps) => {
         position: 'absolute',
         top: 72,
         left: 24,
+        zIndex: -10,
       }}
     >
       {JSON.stringify(data, null, 2)}
