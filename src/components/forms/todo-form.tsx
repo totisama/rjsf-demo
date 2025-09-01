@@ -11,8 +11,7 @@ import { PriorityWidget } from '../widgets/priority-widget'
 import { KeyValueField } from '../fields/key-value-field'
 import { colors } from '../../constants'
 import { DebugPanel } from '../debug-panel'
-
-type Priority = 'low' | 'medium' | 'high'
+import type { Priority } from '../../types'
 
 interface TodoFormValues {
   title: string

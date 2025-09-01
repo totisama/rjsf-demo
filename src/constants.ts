@@ -1,4 +1,4 @@
-import type { Priority } from './App'
+import type { Priority } from './types'
 
 export const colors: Record<
   Priority,

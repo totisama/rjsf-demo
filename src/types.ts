@@ -9,3 +9,5 @@ export interface TableBehavior {
   mode?: 'columnsSum'
   fixedRows?: boolean
 }
+
+export type Priority = 'low' | 'medium' | 'high'
