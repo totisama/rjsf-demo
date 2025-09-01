@@ -111,7 +111,7 @@ export function ConsumptionTableField(props: FieldProps) {
 
   const handleCellChange = (rowKey: string, colKey: string, value: string) => {
     const current = ensureSectionData()
-    const nextRow: Row = { ...(current[rowKey] || {}), [colKey]: value }
+    const nextRow: Row = { ...(current[rowKey] || {}), [colKey]: Number(value) }
     onChange({ ...current, [rowKey]: nextRow })
   }
 
