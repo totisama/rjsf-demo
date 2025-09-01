@@ -78,6 +78,9 @@ export function ConsumptionTableField(props: FieldProps) {
   }, [properties, registry.schemaUtils, formData])
   const canEdit = !(disabled || readonly)
 
+  const ensureSectionData = () =>
+    typeof formData === 'object' && formData !== null ? formData : {}
+
   const handleSelectedOptionsChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -91,22 +94,25 @@ export function ConsumptionTableField(props: FieldProps) {
 
   const addRow = (rowKey: string) => {
     if (!rowKey || selectedKeys.includes(rowKey)) return
-
     setSelectedKeys((prev) => [...prev, rowKey])
-    onChange({ ...formData, [rowKey]: (formData[rowKey] as Row) ?? {} })
+
+    const current = ensureSectionData()
+    const nextRow: Row = current[rowKey] ?? {}
+    onChange({ ...current, [rowKey]: nextRow })
   }
 
   const removeRow = (rowKey: string) => {
     setSelectedKeys((prev) => prev.filter((k) => k !== rowKey))
-    const next = { ...formData }
+    const current = ensureSectionData()
+    const next = { ...current }
     delete next[rowKey]
     onChange(next)
   }
 
   const handleCellChange = (rowKey: string, colKey: string, value: string) => {
-    const nextRow: Row = { ...(formData[rowKey] || {}), [colKey]: value }
-
-    onChange({ ...formData, [rowKey]: nextRow })
+    const current = ensureSectionData()
+    const nextRow: Row = { ...(current[rowKey] || {}), [colKey]: value }
+    onChange({ ...current, [rowKey]: nextRow })
   }
 
   const handleCellBlur = (
@@ -115,7 +121,8 @@ export function ConsumptionTableField(props: FieldProps) {
     min?: number,
     max?: number
   ) => {
-    const currentValue = formData[rowKey]?.[colKey]
+    const current = ensureSectionData()
+    const currentValue = current[rowKey]?.[colKey]
 
     if (
       currentValue &&
