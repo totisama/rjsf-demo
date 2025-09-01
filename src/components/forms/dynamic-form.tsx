@@ -1,9 +1,10 @@
 import Form, { type IChangeEvent } from '@rjsf/core'
 import validator from '@rjsf/validator-ajv6'
 import type { RegistryFieldsType, RJSFSchema } from '@rjsf/utils'
-import { FieldTemplate } from '../templates/field-template'
 import { computeUiSchema } from '../../utils/computeUiSchema'
 import { HiddenField } from '../fields/hidden-field'
+import { ErrorListTemplate } from '../templates/error-list-template'
+import { FieldTemplateNoError } from '../templates/field-template-no-error'
 
 type DynamicFormProps = {
   schema: RJSFSchema
@@ -35,13 +36,14 @@ export const DynamicForm = ({
       validator={validator}
       fields={{ ...fields, ...extraFields }}
       templates={{
-        FieldTemplate,
+        FieldTemplate: FieldTemplateNoError,
+        ErrorListTemplate,
       }}
       experimental_defaultFormStateBehavior={{
         emptyObjectFields: 'skipEmptyDefaults',
         constAsDefaults: 'skipOneOf',
       }}
-      showErrorList={false}
+      showErrorList="bottom"
       onChange={(e: IChangeEvent) => onChange?.(e.formData)}
       onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
     />
