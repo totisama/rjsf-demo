@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { FieldProps, RJSFSchema } from '@rjsf/utils'
-
-type Row = Record<string, number | undefined>
+import type { Row } from '../../types'
 
 interface ColMeta {
   key: string

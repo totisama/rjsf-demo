@@ -11,3 +11,5 @@ export interface TableBehavior {
 }
 
 export type Priority = 'low' | 'medium' | 'high'
+
+export type Row = Record<string, number | undefined>
