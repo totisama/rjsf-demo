@@ -1,6 +1,10 @@
 import Form, { type IChangeEvent } from '@rjsf/core'
 import validator from '@rjsf/validator-ajv6'
-import type { RegistryFieldsType, RJSFSchema } from '@rjsf/utils'
+import type {
+  RegistryFieldsType,
+  RegistryWidgetsType,
+  RJSFSchema,
+} from '@rjsf/utils'
 import { computeUiSchema } from '../../utils/computeUiSchema'
 import { HiddenField } from '../fields/hidden-field'
 import { ErrorListTemplate } from '../templates/error-list-template'
@@ -10,6 +14,7 @@ type DynamicFormProps = {
   schema: RJSFSchema
   formData?: unknown
   fields?: RegistryFieldsType
+  widgets?: RegistryWidgetsType
   onChange?: (data: unknown) => void
   onSubmit?: (data: unknown) => void
 }
@@ -25,6 +30,7 @@ export const DynamicForm = ({
   onChange,
   onSubmit,
   fields,
+  widgets,
 }: DynamicFormProps) => {
   const uiSchema = computeUiSchema(schema as RJSFSchema)
 
@@ -35,6 +41,7 @@ export const DynamicForm = ({
       uiSchema={uiSchema}
       validator={validator}
       fields={{ ...fields, ...extraFields }}
+      widgets={{ ...widgets }}
       templates={{
         FieldTemplate: FieldTemplateNoError,
         ErrorListTemplate,
