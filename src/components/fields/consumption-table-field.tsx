@@ -128,6 +128,7 @@ export function ConsumptionTableField(props: FieldProps) {
       ((min !== undefined && currentValue < min) ||
         (max !== undefined && currentValue > max))
     ) {
+      alert(`Value for ${colKey} is out of range. min: ${min}, max: ${max}`)
       const updatedRow: Row = { ...(formData[rowKey] || {}) }
 
       updatedRow[colKey] = undefined

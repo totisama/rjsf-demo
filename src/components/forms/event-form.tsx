@@ -4,6 +4,12 @@ import eventSchema from '../../eventSchema.json'
 import { DynamicForm } from './dynamic-form'
 import { ConsumptionTableField } from '../fields/consumption-table-field'
 import { DebugPanel } from '../debug-panel'
+import { EmailWidget } from '../widgets/email-widget'
+import { PositionField } from '../fields/position-field'
+import { DateTimeUtcField } from '../fields/date-time-utc-field'
+import { TextareaWidget } from '../widgets/textarea-widget'
+import { RadioWidget } from '../widgets/radio-widget'
+import { BunkerTableField } from '../fields/bunker-table-field'
 
 export const EventForm = () => {
   const [formData, setFormData] = useState<Record<string, unknown>>({})
@@ -19,7 +25,17 @@ export const EventForm = () => {
       <DynamicForm
         schema={eventSchema as unknown as RJSFSchema}
         formData={formData}
-        fields={{ ConsumptionTable: ConsumptionTableField }}
+        fields={{
+          ConsumptionTable: ConsumptionTableField,
+          DateTimeUtc: DateTimeUtcField,
+          Position: PositionField,
+          BunkerTable: BunkerTableField,
+        }}
+        widgets={{
+          Email: EmailWidget,
+          RadioPills: RadioWidget,
+          Textarea: TextareaWidget,
+        }}
         onChange={(data) => setFormData(data as Record<string, unknown>)}
         onSubmit={handleSubmit}
       />
