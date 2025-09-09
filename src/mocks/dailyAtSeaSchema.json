@@ -1,0 +1,5155 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "appCompatibleVersion": "1.0.5",
+  "appDownloadLink": "https://reporter.orbitmi.cloud/orbit-reporter.html",
+  "definitions": {
+    "temperatureItem": {
+      "type": "number",
+      "decimals": 2
+    },
+    "dateTimeUtcOptional": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "title": "Date",
+          "type": "string",
+          "format": "date"
+        },
+        "time": {
+          "title": "Time",
+          "type": "string",
+          "minimum": 0,
+          "maximum": 2359
+        },
+        "utc": {
+          "title": "UTC",
+          "type": "string",
+          "oneOf": [
+            {
+              "title": "",
+              "const": ""
+            },
+            {
+              "title": "-13",
+              "const": "-13:00"
+            },
+            {
+              "title": "-12",
+              "const": "-12:00"
+            },
+            {
+              "title": "-11",
+              "const": "-11:00"
+            },
+            {
+              "title": "-10",
+              "const": "-10:00"
+            },
+            {
+              "title": "-09:30",
+              "const": "-09:30"
+            },
+            {
+              "title": "-09",
+              "const": "-09:00"
+            },
+            {
+              "title": "-08",
+              "const": "-08:00"
+            },
+            {
+              "title": "-07",
+              "const": "-07:00"
+            },
+            {
+              "title": "-06",
+              "const": "-06:00"
+            },
+            {
+              "title": "-05",
+              "const": "-05:00"
+            },
+            {
+              "title": "-04",
+              "const": "-04:00"
+            },
+            {
+              "title": "-03",
+              "const": "-03:00"
+            },
+            {
+              "title": "-02",
+              "const": "-02:00"
+            },
+            {
+              "title": "-01",
+              "const": "-01:00"
+            },
+            {
+              "title": "+00",
+              "const": "+00:00"
+            },
+            {
+              "title": "+01",
+              "const": "+01:00"
+            },
+            {
+              "title": "+02",
+              "const": "+02:00"
+            },
+            {
+              "title": "+03",
+              "const": "+03:00"
+            },
+            {
+              "title": "+04",
+              "const": "+04:00"
+            },
+            {
+              "title": "+05",
+              "const": "+05:00"
+            },
+            {
+              "title": "+05:30",
+              "const": "+05:30"
+            },
+            {
+              "title": "+06",
+              "const": "+06:00"
+            },
+            {
+              "title": "+07",
+              "const": "+07:00"
+            },
+            {
+              "title": "+08",
+              "const": "+08:00"
+            },
+            {
+              "title": "+09",
+              "const": "+09:00"
+            },
+            {
+              "title": "+09:30",
+              "const": "+09:30"
+            },
+            {
+              "title": "+10",
+              "const": "+10:00"
+            },
+            {
+              "title": "+11",
+              "const": "+11:00"
+            },
+            {
+              "title": "+12",
+              "const": "+12:00"
+            },
+            {
+              "title": "+13",
+              "const": "+13:00"
+            },
+            {
+              "title": "+14",
+              "const": "+14:00"
+            }
+          ]
+        }
+      }
+    },
+    "capacityM3Item": {
+      "type": "number",
+      "maximum": 20000,
+      "decimals": 2
+    },
+    "numberItem": {
+      "type": "number",
+      "minimum": 0,
+      "decimals": 2
+    },
+    "viscosityNumberItem": {
+      "type": "number",
+      "maximum": 5000,
+      "decimals": 2
+    },
+    "percentageItem": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 100,
+      "decimals": 2
+    },
+    "methanePercentageItem": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "decimals": 2
+    },
+    "fuelGradeItem": {
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "HSFO",
+          "title": "HSFO"
+        },
+        {
+          "const": "VLSFO",
+          "title": "VLSFO"
+        },
+        {
+          "const": "LSMGO",
+          "title": "LSMGO"
+        },
+        {
+          "const": "LNG",
+          "title": "LNG"
+        }
+      ]
+    },
+    "tankSummaryRow": {
+      "type": "object",
+      "properties": {
+        "tankName": {
+          "title": "Tank name",
+          "disabled": true,
+          "type": "string",
+          "hidden": true,
+          "prepopulated": true
+        },
+        "fuelGrade": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/fuelGradeItem"
+            },
+            {
+              "title": "Fuel grade",
+              "disabled": true
+            }
+          ]
+        },
+        "capacityM3": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/capacityM3Item"
+            },
+            {
+              "title": "Capacity at 100% (M3)",
+              "disabled": true
+            }
+          ]
+        },
+        "capacityMT": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/numberItem"
+            },
+            {
+              "title": "Capacity at 100% (MT)",
+              "disabled": true
+            }
+          ]
+        },
+        "capacityAt90": {
+          "title": "Capacity at 90% (MT)",
+          "type": "number",
+          "uiType": "calculated",
+          "calculationFormula": "$.capacityMT * 0.9",
+          "disabled": true
+        },
+        "density": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/numberItem"
+            },
+            {
+              "title": "Density(kg/m³)"
+            }
+          ]
+        },
+        "tankTemperature": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/temperatureItem"
+            },
+            {
+              "title": "Tank Temperature(°C)"
+            }
+          ]
+        },
+        "tankPressure": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/numberItem"
+            },
+            {
+              "title": "Tank Pressure(mBarg)",
+              "showWhen": {
+                "field": "fuelGrade",
+                "equals": "LNG"
+              }
+            }
+          ]
+        },
+        "rob": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/numberItem"
+            },
+            {
+              "title": "ROB(MT)"
+            }
+          ]
+        },
+        "sulphur": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/numberItem"
+            },
+            {
+              "title": "Sulphur(%)"
+            }
+          ]
+        },
+        "viscosity": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/viscosityNumberItem"
+            },
+            {
+              "title": "Viscosity(cST)"
+            }
+          ]
+        },
+        "methane": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/numberItem"
+            },
+            {
+              "title": "Methane Number",
+              "showWhen": {
+                "field": "fuelGrade",
+                "equals": "LNG"
+              }
+            }
+          ]
+        },
+        "methanePercentage": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/methanePercentageItem"
+            },
+            {
+              "title": "Methane %",
+              "showWhen": {
+                "field": "fuelGrade",
+                "equals": "LNG"
+              }
+            }
+          ]
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "fuelGrade"
+          ]
+        },
+        {
+          "required": [
+            "capacityM3"
+          ]
+        },
+        {
+          "required": [
+            "capacityMT"
+          ]
+        },
+        {
+          "required": [
+            "capacityAt90"
+          ]
+        },
+        {
+          "required": [
+            "rob"
+          ]
+        },
+        {
+          "required": [
+            "sulphur"
+          ]
+        }
+      ]
+    },
+    "direction": {
+      "title": "Direction",
+      "type": "string",
+      "oneOf": [
+        {
+          "const": "",
+          "title": ""
+        },
+        {
+          "const": "N",
+          "title": "N"
+        },
+        {
+          "const": "Ne",
+          "title": "NE"
+        },
+        {
+          "const": "E",
+          "title": "E"
+        },
+        {
+          "const": "Se",
+          "title": "SE"
+        },
+        {
+          "const": "S",
+          "title": "S"
+        },
+        {
+          "const": "Sw",
+          "title": "SW"
+        },
+        {
+          "const": "W",
+          "title": "W"
+        },
+        {
+          "const": "Nw",
+          "title": "NW"
+        }
+      ],
+      "default": ""
+    },
+    "port": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "country": {
+          "title": "Country",
+          "type": "string"
+        },
+        "code": {
+          "title": "UN-Code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "oilItem": {
+      "type": "number",
+      "minimum": 0,
+      "decimals": 2
+    },
+    "oilRow": {
+      "type": "object",
+      "properties": {
+        "hsfo": {
+          "fuelType": "HsFo",
+          "title": "HSFO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "hfo": {
+          "fuelType": "HFO",
+          "title": "HFO (CST > 80) VLSFO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "lfo": {
+          "fuelType": "LFO",
+          "title": "LFO (CST < 80) VLSFO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "lsmgo": {
+          "fuelType": "LsMgo",
+          "title": "LSMGO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "lng": {
+          "fuelType": "LNG",
+          "title": "LNG",
+          "$ref": "#/definitions/oilItem",
+          "showWhen": [
+            {
+              "field": "tankSummary.*.fuelGrade",
+              "equals": "LNG"
+            }
+          ]
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "hfo"
+          ],
+          "properties": {
+            "hfo": {
+              "minimum": 0.01
+            }
+          }
+        },
+        {
+          "required": [
+            "lfo"
+          ],
+          "properties": {
+            "lfo": {
+              "minimum": 0.01
+            }
+          }
+        },
+        {
+          "required": [
+            "hsfo"
+          ],
+          "properties": {
+            "hsfo": {
+              "minimum": 0.01
+            }
+          }
+        },
+        {
+          "required": [
+            "lsmgo"
+          ],
+          "properties": {
+            "lsmgo": {
+              "minimum": 0.01
+            }
+          }
+        },
+        {
+          "required": [
+            "lng"
+          ],
+          "properties": {
+            "lng": {
+              "minimum": 0.01
+            }
+          }
+        }
+      ]
+    },
+    "oilRowOptional": {
+      "type": "object",
+      "properties": {
+        "hsfo": {
+          "fuelType": "HsFo",
+          "title": "HSFO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "hfo": {
+          "fuelType": "HFO",
+          "title": "HFO (CST > 80) VLSFO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "lfo": {
+          "fuelType": "LFO",
+          "title": "LFO (CST < 80) VLSFO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "lsmgo": {
+          "fuelType": "LsMgo",
+          "title": "LSMGO",
+          "$ref": "#/definitions/oilItem"
+        },
+        "lng": {
+          "fuelType": "LNG",
+          "title": "LNG",
+          "$ref": "#/definitions/oilItem",
+          "showWhen": [
+            {
+              "field": "tankSummary.*.fuelGrade",
+              "equals": "LNG"
+            }
+          ]
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "hfo"
+          ]
+        },
+        {
+          "required": [
+            "lfo"
+          ]
+        },
+        {
+          "required": [
+            "hsfo"
+          ]
+        },
+        {
+          "required": [
+            "lsmgo"
+          ]
+        },
+        {
+          "required": [
+            "lng"
+          ]
+        }
+      ]
+    },
+    "consumptionItem": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 180,
+      "decimals": 2
+    },
+    "consumptionLngItem": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 200,
+      "decimals": 2
+    },
+    "lngItem": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 400,
+      "decimals": 2,
+      "uiType": "calculated",
+      "calculationFormula": "$.liquidLng + $.bogLng"
+    },
+    "consumptionRow": {
+      "type": "object",
+      "properties": {
+        "hsfo": {
+          "fuelType": "HsFo",
+          "title": "HSFO (3.5%)",
+          "$ref": "#/definitions/consumptionItem"
+        },
+        "hfo": {
+          "fuelType": "HFO",
+          "title": "HFO (CST > 80) VLSFO",
+          "$ref": "#/definitions/consumptionItem"
+        },
+        "lfo": {
+          "fuelType": "LFO",
+          "title": "LFO (CST < 80) VLSFO",
+          "$ref": "#/definitions/consumptionItem"
+        },
+        "lsmgo": {
+          "fuelType": "LsMgo",
+          "title": "LSMGO",
+          "$ref": "#/definitions/consumptionItem"
+        },
+        "liquidLng": {
+          "title": "Liquid - LNG",
+          "$ref": "#/definitions/consumptionLngItem",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "bogLng": {
+          "title": "BOG - LNG",
+          "$ref": "#/definitions/consumptionLngItem",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "lng": {
+          "fuelType": "LNG",
+          "title": "LNG",
+          "$ref": "#/definitions/lngItem",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "hsfo"
+          ]
+        },
+        {
+          "required": [
+            "hfo"
+          ]
+        },
+        {
+          "required": [
+            "lfo"
+          ]
+        },
+        {
+          "required": [
+            "lsmgo"
+          ]
+        },
+        {
+          "required": [
+            "liquidLng"
+          ]
+        },
+        {
+          "required": [
+            "bogLng"
+          ]
+        },
+        {
+          "required": [
+            "lng"
+          ]
+        }
+      ]
+    },
+    "utilizationItem": {
+      "type": "string",
+      "minimum": 0,
+      "maximum": 2500
+    },
+    "utilizationAeSFOCItem": {
+      "type": "number",
+      "minimum": 0,
+      "disabled": true,
+      "decimals": 1
+    },
+    "utilizationTotalItem": {
+      "type": "string",
+      "minimum": 0,
+      "maximum": 2500,
+      "disabled": true
+    },
+    "utilizationTotalRow": {
+      "type": "object",
+      "properties": {
+        "1RunningHoursPerDay": {
+          "title": "No 1",
+          "uiType": "time",
+          "sumTimeFormula": "auxiliaryGas.1RunningHoursPerDay + auxiliaryDieselLSMGO.1RunningHoursPerDay + auxiliaryDieselVLSFO.1RunningHoursPerDay",
+          "$ref": "#/definitions/utilizationTotalItem"
+        },
+        "2RunningHoursPerDay": {
+          "title": "No 2",
+          "uiType": "time",
+          "sumTimeFormula": "auxiliaryGas.2RunningHoursPerDay + auxiliaryDieselLSMGO.2RunningHoursPerDay + auxiliaryDieselVLSFO.2RunningHoursPerDay",
+          "$ref": "#/definitions/utilizationTotalItem"
+        },
+        "3RunningHoursPerDay": {
+          "title": "No 3",
+          "uiType": "time",
+          "sumTimeFormula": "auxiliaryGas.3RunningHoursPerDay + auxiliaryDieselLSMGO.3RunningHoursPerDay + auxiliaryDieselVLSFO.3RunningHoursPerDay",
+          "$ref": "#/definitions/utilizationTotalItem"
+        },
+        "4RunningHoursPerDay": {
+          "title": "No 4",
+          "uiType": "time",
+          "sumTimeFormula": "auxiliaryGas.4RunningHoursPerDay + auxiliaryDieselLSMGO.4RunningHoursPerDay + auxiliaryDieselVLSFO.4RunningHoursPerDay",
+          "$ref": "#/definitions/utilizationTotalItem"
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "1RunningHoursPerDay"
+          ]
+        },
+        {
+          "required": [
+            "2RunningHoursPerDay"
+          ]
+        },
+        {
+          "required": [
+            "3RunningHoursPerDay"
+          ]
+        },
+        {
+          "required": [
+            "4RunningHoursPerDay"
+          ]
+        }
+      ]
+    },
+    "boilerTotalRow": {
+      "type": "object",
+      "properties": {
+        "1RunningHoursPerDay": {
+          "title": "No 1",
+          "uiType": "time",
+          "$ref": "#/definitions/utilizationTotalItem",
+          "sumTimeFormula": "boilerGas.1RunningHoursPerDay + boilerDieselLSMGO.1RunningHoursPerDay + boilerDieselVLSFO.1RunningHoursPerDay + boilerDualGas.1RunningHoursPerDay"
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "1RunningHoursPerDay"
+          ]
+        }
+      ]
+    },
+    "boilerRow": {
+      "type": "object",
+      "properties": {
+        "1RunningHoursPerDay": {
+          "title": "No 1",
+          "uiType": "time",
+          "$ref": "#/definitions/utilizationItem"
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "1RunningHoursPerDay"
+          ]
+        }
+      ]
+    },
+    "utilizationRow": {
+      "type": "object",
+      "properties": {
+        "1RunningHoursPerDay": {
+          "title": "No 1",
+          "uiType": "time",
+          "$ref": "#/definitions/utilizationItem"
+        },
+        "2RunningHoursPerDay": {
+          "title": "No 2",
+          "uiType": "time",
+          "$ref": "#/definitions/utilizationItem"
+        },
+        "3RunningHoursPerDay": {
+          "title": "No 3",
+          "uiType": "time",
+          "$ref": "#/definitions/utilizationItem"
+        },
+        "4RunningHoursPerDay": {
+          "title": "No 4",
+          "uiType": "time",
+          "$ref": "#/definitions/utilizationItem"
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "1RunningHoursPerDay"
+          ]
+        },
+        {
+          "required": [
+            "2RunningHoursPerDay"
+          ]
+        },
+        {
+          "required": [
+            "3RunningHoursPerDay"
+          ]
+        },
+        {
+          "required": [
+            "4RunningHoursPerDay"
+          ]
+        }
+      ]
+    },
+    "utilizationEnergyItem": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 99999
+    },
+    "utilizationAeSFOCRow": {
+      "type": "object",
+      "properties": {
+        "1AeSFOC": {
+          "title": "",
+          "$ref": "#/definitions/utilizationAeSFOCItem"
+        },
+        "2AeSFOC": {
+          "title": "",
+          "$ref": "#/definitions/utilizationAeSFOCItem"
+        },
+        "3AeSFOC": {
+          "title": "",
+          "$ref": "#/definitions/utilizationAeSFOCItem"
+        },
+        "4AeSFOC": {
+          "title": "",
+          "$ref": "#/definitions/utilizationAeSFOCItem"
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "1AeSFOC"
+          ]
+        },
+        {
+          "required": [
+            "2AeSFOC"
+          ]
+        },
+        {
+          "required": [
+            "3AeSFOC"
+          ]
+        },
+        {
+          "required": [
+            "4AeSFOC"
+          ]
+        }
+      ]
+    },
+    "utilizationEnergyRow": {
+      "type": "object",
+      "properties": {
+        "1EnergyProduced": {
+          "title": "",
+          "$ref": "#/definitions/utilizationEnergyItem"
+        },
+        "2EnergyProduced": {
+          "title": "",
+          "$ref": "#/definitions/utilizationEnergyItem"
+        },
+        "3EnergyProduced": {
+          "title": "",
+          "$ref": "#/definitions/utilizationEnergyItem"
+        },
+        "4EnergyProduced": {
+          "title": "",
+          "$ref": "#/definitions/utilizationEnergyItem"
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "1EnergyProduced"
+          ]
+        },
+        {
+          "required": [
+            "2EnergyProduced"
+          ]
+        },
+        {
+          "required": [
+            "3EnergyProduced"
+          ]
+        },
+        {
+          "required": [
+            "4EnergyProduced"
+          ]
+        }
+      ]
+    },
+    "dateTimeUtcLimited": {
+      "type": "object",
+      "limited": true,
+      "maxHours": 13,
+      "properties": {
+        "date": {
+          "title": "Date",
+          "type": "string",
+          "format": "date"
+        },
+        "time": {
+          "title": "Time",
+          "type": "string",
+          "minimum": 0,
+          "maximum": 2359
+        },
+        "utc": {
+          "title": "UTC",
+          "type": "string",
+          "oneOf": [
+            {
+              "title": "",
+              "const": ""
+            },
+            {
+              "title": "-13",
+              "const": "-13:00"
+            },
+            {
+              "title": "-12",
+              "const": "-12:00"
+            },
+            {
+              "title": "-11",
+              "const": "-11:00"
+            },
+            {
+              "title": "-10",
+              "const": "-10:00"
+            },
+            {
+              "title": "-09:30",
+              "const": "-09:30"
+            },
+            {
+              "title": "-09",
+              "const": "-09:00"
+            },
+            {
+              "title": "-08",
+              "const": "-08:00"
+            },
+            {
+              "title": "-07",
+              "const": "-07:00"
+            },
+            {
+              "title": "-06",
+              "const": "-06:00"
+            },
+            {
+              "title": "-05",
+              "const": "-05:00"
+            },
+            {
+              "title": "-04",
+              "const": "-04:00"
+            },
+            {
+              "title": "-03",
+              "const": "-03:00"
+            },
+            {
+              "title": "-02",
+              "const": "-02:00"
+            },
+            {
+              "title": "-01",
+              "const": "-01:00"
+            },
+            {
+              "title": "+00",
+              "const": "+00:00"
+            },
+            {
+              "title": "+01",
+              "const": "+01:00"
+            },
+            {
+              "title": "+02",
+              "const": "+02:00"
+            },
+            {
+              "title": "+03",
+              "const": "+03:00"
+            },
+            {
+              "title": "+04",
+              "const": "+04:00"
+            },
+            {
+              "title": "+05",
+              "const": "+05:00"
+            },
+            {
+              "title": "+05:30",
+              "const": "+05:30"
+            },
+            {
+              "title": "+06",
+              "const": "+06:00"
+            },
+            {
+              "title": "+07",
+              "const": "+07:00"
+            },
+            {
+              "title": "+08",
+              "const": "+08:00"
+            },
+            {
+              "title": "+09",
+              "const": "+09:00"
+            },
+            {
+              "title": "+09:30",
+              "const": "+09:30"
+            },
+            {
+              "title": "+10",
+              "const": "+10:00"
+            },
+            {
+              "title": "+11",
+              "const": "+11:00"
+            },
+            {
+              "title": "+12",
+              "const": "+12:00"
+            },
+            {
+              "title": "+13",
+              "const": "+13:00"
+            },
+            {
+              "title": "+14",
+              "const": "+14:00"
+            }
+          ]
+        }
+      },
+      "required": [
+        "date",
+        "time"
+      ]
+    },
+    "dateTimeUtc": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "title": "Date",
+          "type": "string",
+          "format": "date"
+        },
+        "time": {
+          "title": "Time",
+          "type": "string",
+          "minimum": 0,
+          "maximum": 2359
+        },
+        "utc": {
+          "title": "UTC",
+          "type": "string",
+          "oneOf": [
+            {
+              "title": "",
+              "const": ""
+            },
+            {
+              "title": "-13",
+              "const": "-13:00"
+            },
+            {
+              "title": "-12",
+              "const": "-12:00"
+            },
+            {
+              "title": "-11",
+              "const": "-11:00"
+            },
+            {
+              "title": "-10",
+              "const": "-10:00"
+            },
+            {
+              "title": "-09:30",
+              "const": "-09:30"
+            },
+            {
+              "title": "-09",
+              "const": "-09:00"
+            },
+            {
+              "title": "-08",
+              "const": "-08:00"
+            },
+            {
+              "title": "-07",
+              "const": "-07:00"
+            },
+            {
+              "title": "-06",
+              "const": "-06:00"
+            },
+            {
+              "title": "-05",
+              "const": "-05:00"
+            },
+            {
+              "title": "-04",
+              "const": "-04:00"
+            },
+            {
+              "title": "-03",
+              "const": "-03:00"
+            },
+            {
+              "title": "-02",
+              "const": "-02:00"
+            },
+            {
+              "title": "-01",
+              "const": "-01:00"
+            },
+            {
+              "title": "+00",
+              "const": "+00:00"
+            },
+            {
+              "title": "+01",
+              "const": "+01:00"
+            },
+            {
+              "title": "+02",
+              "const": "+02:00"
+            },
+            {
+              "title": "+03",
+              "const": "+03:00"
+            },
+            {
+              "title": "+04",
+              "const": "+04:00"
+            },
+            {
+              "title": "+05",
+              "const": "+05:00"
+            },
+            {
+              "title": "+05:30",
+              "const": "+05:30"
+            },
+            {
+              "title": "+06",
+              "const": "+06:00"
+            },
+            {
+              "title": "+07",
+              "const": "+07:00"
+            },
+            {
+              "title": "+08",
+              "const": "+08:00"
+            },
+            {
+              "title": "+09",
+              "const": "+09:00"
+            },
+            {
+              "title": "+09:30",
+              "const": "+09:30"
+            },
+            {
+              "title": "+10",
+              "const": "+10:00"
+            },
+            {
+              "title": "+11",
+              "const": "+11:00"
+            },
+            {
+              "title": "+12",
+              "const": "+12:00"
+            },
+            {
+              "title": "+13",
+              "const": "+13:00"
+            },
+            {
+              "title": "+14",
+              "const": "+14:00"
+            }
+          ]
+        }
+      },
+      "required": [
+        "date",
+        "time"
+      ]
+    }
+  },
+  "type": "object",
+  "reportType": "Daily",
+  "reportTitle": "Daily Report At Sea",
+  "reportSubType": "PrimaryAtSea",
+  "useVesselConfig": true,
+  "properties": {
+    "commonInfo": {
+      "title": "",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "vesselName": {
+          "title": "Vessel name",
+          "type": "string",
+          "uiType": "string",
+          "prepopulated": true
+        },
+        "imo": {
+          "title": "IMO",
+          "type": "integer",
+          "pattern": "^\\d{7}$",
+          "prepopulated": true,
+          "message": {
+            "pattern": "Please enter a valid IMO. 7 digits only"
+          }
+        },
+        "callSign": {
+          "title": "Call sign",
+          "type": "string",
+          "uiType": "string",
+          "prepopulated": true
+        },
+        "email": {
+          "title": "Vessel Email",
+          "type": "string",
+          "uiType": "email"
+        },
+        "fullVoyageNumber": {
+          "title": "Voyage Number",
+          "uiType": "fullVoyageNumber",
+          "flatType": "combined",
+          "type": "object",
+          "properties": {
+            "vesselCode": {
+              "title": "Vessel Code",
+              "type": "string"
+            },
+            "voyageNumber": {
+              "title": "Voyage Number",
+              "type": "string",
+              "pattern": "^\\d{4}$",
+              "message": {
+                "pattern": "Voyage Number - Please enter a valid value. 4 digits only"
+              },
+              "prepopulated": true
+            },
+            "direction": {
+              "title": "Direction",
+              "type": "string",
+              "oneOf": [
+                {
+                  "const": "",
+                  "title": ""
+                },
+                {
+                  "const": "E",
+                  "title": "E"
+                },
+                {
+                  "const": "W",
+                  "title": "W"
+                },
+                {
+                  "const": "N",
+                  "title": "N"
+                },
+                {
+                  "const": "S",
+                  "title": "S"
+                }
+              ]
+            }
+          },
+          "required": [
+            "vesselCode",
+            "voyageNumber",
+            "direction"
+          ]
+        },
+        "reportDate": {
+          "title": "Report Date",
+          "uiType": "dateTimeUtc",
+          "utcLtSwitcher": true,
+          "$ref": "#/definitions/dateTimeUtcLimited",
+          "limited": true,
+          "prepopulatedWithTodaysDate": true,
+          "marginBottom": true
+        },
+        "position": {
+          "title": "Report Position",
+          "uiType": "position",
+          "prepopulated": true,
+          "marginBottom": true,
+          "type": "object",
+          "properties": {
+            "latitude": {
+              "type": "object",
+              "title": "Report Position - Latitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 89
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "title": "",
+                      "const": ""
+                    },
+                    {
+                      "const": "North",
+                      "title": "N"
+                    },
+                    {
+                      "const": "South",
+                      "title": "S"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "degrees",
+                "minutes",
+                "seconds",
+                "direction"
+              ]
+            },
+            "longitude": {
+              "type": "object",
+              "title": "Report Position - Longitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 179
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "title": "",
+                      "const": ""
+                    },
+                    {
+                      "const": "East",
+                      "title": "E"
+                    },
+                    {
+                      "const": "West",
+                      "title": "W"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "degrees",
+                "minutes",
+                "seconds",
+                "direction"
+              ]
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "mastersName": {
+          "title": "Master's Name",
+          "type": "string",
+          "uiType": "string"
+        },
+        "cesName": {
+          "title": "C/E's Name",
+          "type": "string",
+          "uiType": "string",
+          "marginBottom": true
+        },
+        "service": {
+          "title": "Service",
+          "type": "string",
+          "uiType": "string"
+        },
+        "vesselOperator": {
+          "title": "Vessel Operator",
+          "type": "string",
+          "uiType": "string"
+        },
+        "dualFuelVessel": {
+          "title": "Dual Fuel Vessel",
+          "uiType": "checkbox",
+          "default": false,
+          "type": "boolean",
+          "hide": true
+        }
+      },
+      "required": [
+        "vesselName",
+        "imo",
+        "callSign",
+        "fullVoyageNumber",
+        "email",
+        "reportDate",
+        "position",
+        "mastersName",
+        "cesName",
+        "service",
+        "vesselOperator"
+      ]
+    },
+    "nextPortInformation": {
+      "title": "Next Port",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "nextPort": {
+          "title": "Next Schedule Port Name",
+          "uiType": "port",
+          "widgetSize": "small",
+          "prepopulated": true,
+          "$ref": "#/definitions/port"
+        },
+        "nextPortPosition": {
+          "title": "Position of Next Schedule Port (Pilot Station)",
+          "uiType": "position",
+          "marginBottom": true,
+          "type": "object",
+          "properties": {
+            "latitude": {
+              "type": "object",
+              "title": "Position of Next Schedule Port - Latitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 89
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "title": "",
+                      "const": ""
+                    },
+                    {
+                      "const": "North",
+                      "title": "N"
+                    },
+                    {
+                      "const": "South",
+                      "title": "S"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "degrees",
+                "minutes",
+                "seconds",
+                "direction"
+              ]
+            },
+            "longitude": {
+              "type": "object",
+              "title": "Position of Next Schedule Port - Longitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 179
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "title": "",
+                      "const": ""
+                    },
+                    {
+                      "const": "East",
+                      "title": "E"
+                    },
+                    {
+                      "const": "West",
+                      "title": "W"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "degrees",
+                "minutes",
+                "seconds",
+                "direction"
+              ]
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "etaRequiredByAgent": {
+          "title": "ETA Required by Agent",
+          "uiType": "dateTimeUtc",
+          "utcLtSwitcher": true,
+          "$ref": "#/definitions/dateTimeUtc"
+        },
+        "requiredTimeOfArrival": {
+          "title": "ETA Required by LTS / Operator (RTA)",
+          "uiType": "dateTimeUtc",
+          "utcLtSwitcher": true,
+          "$ref": "#/definitions/dateTimeUtc"
+        },
+        "remainingTimeTillRta": {
+          "tooltip": "Remaining Time till RTA = ETA Required by LTS / Operator (RTA) - Report Date",
+          "title": "Remaining Time till RTA",
+          "type": "string",
+          "uiType": "timeDifference",
+          "startDateProperty": "commonInfo.reportDate",
+          "endDateProperty": "nextPortInformation.requiredTimeOfArrival"
+        },
+        "distanceToGo": {
+          "title": "Distance to go to Pilot Station (NM)",
+          "type": "number",
+          "decimals": 0,
+          "minimum": 0,
+          "maximum": 21639
+        },
+        "requiredSpeed": {
+          "title": "Required Speed",
+          "type": "number",
+          "decimals": 2,
+          "uiType": "requiredSpeed",
+          "tooltip": "Distance to go to Pilot Station (NM) divided by (ETA Required by LTS / Operator (RTA) - Report Date)"
+        },
+        "recommendedSpeedByRouteOptimizationVendor": {
+          "title": "Recommended Speed by Route Optimization Vendor (kn)",
+          "type": "number",
+          "decimals": 2,
+          "marginBottom": true
+        },
+        "mastersEtaPilotStation": {
+          "title": "Master's ETA Pilot Station",
+          "uiType": "dateTimeUtc",
+          "utcLtSwitcher": true,
+          "$ref": "#/definitions/dateTimeUtcOptional"
+        },
+        "etaAtEstimatedEosp": {
+          "title": "ETA at Estimated EOSP",
+          "uiType": "dateTimeUtc",
+          "utcLtSwitcher": true,
+          "$ref": "#/definitions/dateTimeUtc"
+        },
+        "positionAtEstimatedEosp": {
+          "title": "Position at Estimated EOSP",
+          "uiType": "position",
+          "marginBottom": true,
+          "type": "object",
+          "properties": {
+            "latitude": {
+              "type": "object",
+              "title": "Position at Estimated EOSP - Latitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 89
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "title": "",
+                      "const": ""
+                    },
+                    {
+                      "const": "North",
+                      "title": "N"
+                    },
+                    {
+                      "const": "South",
+                      "title": "S"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "degrees",
+                "minutes",
+                "seconds",
+                "direction"
+              ]
+            },
+            "longitude": {
+              "type": "object",
+              "title": "Position at Estimated EOSP - Longitude",
+              "properties": {
+                "degrees": {
+                  "title": "Degrees",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 179
+                },
+                "minutes": {
+                  "title": "Minutes",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "seconds": {
+                  "title": "Seconds",
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 59
+                },
+                "direction": {
+                  "title": "Direction",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "title": "",
+                      "const": ""
+                    },
+                    {
+                      "const": "East",
+                      "title": "E"
+                    },
+                    {
+                      "const": "West",
+                      "title": "W"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "degrees",
+                "minutes",
+                "seconds",
+                "direction"
+              ]
+            }
+          },
+          "required": [
+            "latitude",
+            "longitude"
+          ]
+        },
+        "etaBasedOnSpeedOverGroundSlr": {
+          "tooltip": "Report Date + (Distance to go to Pilot Station (NM) / Average speed Over Ground (kn))",
+          "title": "ETA based on Speed Over Ground SLR",
+          "uiType": "ETADateTimeUtc",
+          "utcLtSwitcher": true,
+          "disabled": true,
+          "autocalculated": true,
+          "$ref": "#/definitions/dateTimeUtc",
+          "marginBottom": true
+        },
+        "armedGuardsOnboard": {
+          "title": "Armed Guards Onboard?",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            }
+          ]
+        }
+      },
+      "required": [
+        "nextPort",
+        "etaRequiredByAgent",
+        "requiredTimeOfArrival",
+        "remainingTimeTillRta",
+        "distanceToGo",
+        "requiredSpeed",
+        "etaAtEstimatedEosp",
+        "positionAtEstimatedEosp",
+        "etaBasedOnSpeedOverGroundSlr"
+      ]
+    },
+    "arrivalCondition": {
+      "type": "object",
+      "title": "Arrival Condition",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "draftForward": {
+          "title": "Draft/Forward (m)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200,
+          "decimals": 1
+        },
+        "draftAft": {
+          "title": "Draft/Aft (m)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200,
+          "decimals": 1,
+          "marginBottom": true
+        },
+        "minimumFreeboard": {
+          "title": "Minimum Freeboard (m)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200,
+          "decimals": 1
+        },
+        "gmOnArrival": {
+          "title": "GM on Arrival(m)",
+          "type": "number",
+          "minimum": 0,
+          "decimals": 1
+        },
+        "midDraft": {
+          "title": "Draft/Mid (m)",
+          "type": "number",
+          "minimum": 0,
+          "decimals": 2
+        },
+        "midDraftSource": {
+          "title": "Draft/Mid Source",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "VisuallyTaken",
+              "title": "Visually Taken"
+            },
+            {
+              "const": "Calculated",
+              "title": "Calculated"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "Calculated",
+              "fieldSchema": {
+                "midDraftCalculationReason": {
+                  "title": "Calculation Reason",
+                  "type": "string",
+                  "uiType": "textarea",
+                  "maxLength": 300,
+                  "placeholder": "Explain the basis or method used for calculating mid draft..."
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "midDraft",
+        "midDraftSource",
+        "draftForward",
+        "draftAft",
+        "gmOnArrival"
+      ]
+    },
+    "displacement": {
+      "title": "Displacement",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "displacement": {
+          "title": "Displacement (mt)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200000
+        },
+        "loadlines": {
+          "title": "Loadlines",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "TropicalFresh",
+              "title": "Tropical Fresh"
+            },
+            {
+              "const": "Tropical",
+              "title": "Tropical"
+            },
+            {
+              "const": "FreshWater",
+              "title": "Fresh Water"
+            },
+            {
+              "const": "Summer",
+              "title": "Summer"
+            },
+            {
+              "const": "Winter",
+              "title": "Winter"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "ballast": {
+      "title": "Ballast",
+      "type": "object",
+      "uiType": "conditionalSection",
+      "flatType": "combined",
+      "properties": {
+        "plannedBallastForDeparture": {
+          "title": "Planned Ballast for Departure (mt)",
+          "type": "integer",
+          "minimum": 0
+        },
+        "actualBallastOnboard": {
+          "title": "Actual Ballast Onboard (mt)",
+          "type": "integer",
+          "minimum": 0
+        },
+        "reasonForExceedingPlannedBallast": {
+          "title": "Reason for exceeding planned ballast",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "CoastingInRestrictedWater",
+              "title": "Coasting in Restricted Water"
+            },
+            {
+              "const": "StabilityGm",
+              "title": "Stability - GM"
+            },
+            {
+              "const": "StabilityStress",
+              "title": "Stability - Stress"
+            },
+            {
+              "const": "ToMeetMinimumDraftRequirementForNextPort",
+              "title": "To meet minimum draft requirement for next port"
+            },
+            {
+              "const": "ToMeetTrimRequirementAsPerTrop",
+              "title": "To meet trim requirement as per TROP"
+            },
+            {
+              "const": "Other",
+              "title": "Other"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "Other",
+              "fieldSchema": {
+                "reasonForExceedingPlannedBallastOther": {
+                  "title": "Other",
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "plannedBallastForDeparture",
+        "actualBallastOnboard"
+      ]
+    },
+    "sinceLastDailyReport": {
+      "title": "Since last report",
+      "type": "object",
+      "uiType": "conditionalSection",
+      "flatType": "combined",
+      "properties": {
+        "course": {
+          "title": "Course (degrees)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 359,
+          "marginBottom": true
+        },
+        "distanceOverGround": {
+          "title": "Distance Over Ground (NM)",
+          "type": "number",
+          "decimals": 2,
+          "prepopulated": true,
+          "minimum": 0,
+          "maximum": 600
+        },
+        "distanceThroughWater": {
+          "title": "Distance Through Water (nm)",
+          "type": "number",
+          "reportSubType": "dailyReportAtSea",
+          "minimum": 0,
+          "maximum": 600,
+          "decimals": 2
+        },
+        "engineDistance": {
+          "title": "Engine Distance (nm)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 600,
+          "decimals": 2
+        },
+        "slipOverWater": {
+          "title": "Slip Over Water (%)",
+          "type": "number",
+          "decimals": 1,
+          "tooltip": "Acceptable range is between -30 and 30",
+          "uiType": "percentageOf",
+          "valueA": "sinceLastDailyReport.engineDistance",
+          "valueB": "sinceLastDailyReport.distanceThroughWater"
+        },
+        "slipOverGround": {
+          "title": "Slip Over Ground (%)",
+          "type": "number",
+          "decimals": 1,
+          "tooltip": "Acceptable range is between -30 and 30",
+          "uiType": "percentageOf",
+          "valueA": "sinceLastDailyReport.engineDistance",
+          "valueB": "sinceLastDailyReport.distanceOverGround",
+          "marginBottom": true
+        },
+        "hoursSinceLastReport": {
+          "title": "Hours SLR (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "prepopulated": true,
+          "minimum": 0,
+          "maximum": 2500
+        },
+        "hoursSteamedSinceLastReport": {
+          "title": "Hours steamed SLR (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "prepopulated": true,
+          "minimum": 0,
+          "maximum": 2500
+        },
+        "hoursDriftingSinceLastReport": {
+          "title": "Hours drifting SLR (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "minimum": 0,
+          "maximum": 2500,
+          "showWhenConditionMet": [
+            {
+              "conditionType": "noEquals",
+              "value": "00:00",
+              "fieldSchema": {
+                "reasonNoDrifting": {
+                  "title": "Reason",
+                  "type": "string",
+                  "marginBottom": true
+                }
+              }
+            }
+          ]
+        },
+        "averageSpeedOverGround": {
+          "tooltip": "Distance Over Ground (NM) / Hours steamed SLR (hh:mm)",
+          "title": "Average speed Over Ground (kn)",
+          "type": "number",
+          "uiType": "speedCalculator",
+          "calculatedDistance": "sinceLastDailyReport.distanceOverGround",
+          "calculatedTime": "sinceLastDailyReport.hoursSteamedSinceLastReport",
+          "prepopulated": true,
+          "minimum": 0,
+          "decimals": 1
+        },
+        "logSpeed": {
+          "tooltip": "Distance Through Water (nm) / Hours steamed SLR (hh:mm)",
+          "title": "Average Speed Through Water (kn)",
+          "type": "number",
+          "reportSubType": "dailyReportAtSea",
+          "uiType": "speedCalculator",
+          "calculatedDistance": "sinceLastDailyReport.distanceThroughWater",
+          "calculatedTime": "sinceLastDailyReport.hoursSteamedSinceLastReport",
+          "minimum": 0,
+          "maximum": 300,
+          "decimals": 2,
+          "marginBottom": true
+        },
+        "trimOptimisationProgram": {
+          "title": "Trim Optimisation Program",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "No",
+              "fieldSchema": {
+                "reasonNoTrimOptimisationProgram": {
+                  "title": "Reason",
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "course",
+        "distanceOverGround",
+        "distanceThroughWater",
+        "engineDistance",
+        "hoursSinceLastReport",
+        "hoursSteamedSinceLastReport",
+        "averageSpeedOverGround",
+        "logSpeed"
+      ]
+    },
+    "enginePerformanceSlr": {
+      "title": "Engine Performance SLR",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "averageRpm": {
+          "title": "Average RPM",
+          "type": "number",
+          "prepopulated": true,
+          "minimum": 0,
+          "maximum": 200,
+          "decimals": 1
+        },
+        "averageMainEngineLoad": {
+          "title": "Average Main Engine Load (kW)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 20000,
+          "decimals": 2,
+          "marginBottom": true
+        },
+        "power": {
+          "title": "Power",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "ByTorqueMeter",
+              "title": "By Torque Meter"
+            },
+            {
+              "const": "ByAverageFuelPumpIndex",
+              "title": "By Average Fuel Pump Index"
+            }
+          ]
+        },
+        "meTcCutOut": {
+          "title": "M/E TC Cut Out",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            },
+            {
+              "const": "Na",
+              "title": "N/A"
+            }
+          ]
+        },
+        "meOperatingMode": {
+          "title": "M/E Operating Mode",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "MeConstantFuelMode",
+              "title": "ME Constant Fuel Mode"
+            },
+            {
+              "const": "MeConstantRpmMode",
+              "title": "ME Constant RPM Mode"
+            },
+            {
+              "const": "ConstantLoad",
+              "title": "Constant Load"
+            },
+            {
+              "const": "VariableLoadIncludesRunningUpMe",
+              "title": "Variable Load - Includes Running up M/E"
+            },
+            {
+              "const": "MePerformance",
+              "title": "M/E Performance"
+            },
+            {
+              "const": "NotApplicable",
+              "title": "Not Applicable"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "NotApplicable",
+              "fieldSchema": {
+                "reasonMeOparatingModeNotApplicable": {
+                  "title": "Reason",
+                  "type": "string",
+                  "marginBottom": true
+                }
+              }
+            }
+          ]
+        },
+        "shaftGeneratorInUse": {
+          "title": "Shaft Generator in use",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            },
+            {
+              "const": "Na",
+              "title": "N/A"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "No",
+              "fieldSchema": {
+                "shaftGeneratorNotInUse": {
+                  "title": "Shaft Generator not in use",
+                  "type": "string",
+                  "oneOf": [
+                    {
+                      "const": "MeRunningAt58RpmAndBelow",
+                      "title": "ME running at 58 RPM and below"
+                    },
+                    {
+                      "const": "VesselInHeavyWeather",
+                      "title": "Vessel in heavy weather"
+                    },
+                    {
+                      "const": "VesselOperatingInHighRiskAreaHra",
+                      "title": "Vessel operating in High Risk Area (HRA)"
+                    },
+                    {
+                      "const": "VesselOperatingInCongestedWatersOrTransitManeuvering",
+                      "title": "Vessel operating in congested waters or transit/maneuvering"
+                    },
+                    {
+                      "const": "TotalElectricalLoadIsAboveSgRatedCapacity",
+                      "title": "Total electrical load is above SG rated capacity"
+                    },
+                    {
+                      "const": "OtherTechnicalIssuesWithShaftGeneratorAsIndicatedUnderRemarksOnMachinery",
+                      "title": "Other technical issues with Shaft Generator – as indicated under Remarks on Machinery"
+                    }
+                  ],
+                  "marginBottom": true
+                }
+              }
+            },
+            {
+              "value": "Yes",
+              "fieldSchema": {
+                "shaftGenerator": {
+                  "title": "Shaft Generator (kW)",
+                  "type": "number",
+                  "minimum": 0,
+                  "decimals": 2,
+                  "marginBottom": true
+                }
+              }
+            }
+          ]
+        },
+        "meSumpSounding": {
+          "title": "M/E Sump Sounding",
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "averageRpm",
+        "meSumpSounding",
+        "averageMainEngineLoad"
+      ]
+    },
+    "mainEngineFuelModeBreakdown": {
+      "title": "Main Engine Fuel Mode Breakdown",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "mainEngineGas": {
+          "title": "Main Engine Operation Gas Mode (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "minimum": 0,
+          "maximum": 2500
+        },
+        "mainEngineCSM-MGO": {
+          "title": "Main Engine Operation CSM-MGO Mode (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "minimum": 0,
+          "maximum": 2500
+        },
+        "mainEngineCSM-MGO-LNG-Percent": {
+          "$ref": "#/definitions/percentageItem",
+          "title": "LNG %",
+          "marginLeft": 10,
+          "validateSum": {
+            "other": "mainEngineFuelModeBreakdown.mainEngineCSM-MGO-Percent",
+            "equals": 100,
+            "basedBy": "mainEngineFuelModeBreakdown.mainEngineCSM-MGO"
+          },
+          "showWhenAnd": [
+            {
+              "field": "mainEngineFuelModeBreakdown.mainEngineCSM-MGO",
+              "filled": true
+            },
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "mainEngineCSM-MGO-Percent": {
+          "$ref": "#/definitions/percentageItem",
+          "title": "MGO %",
+          "marginLeft": 10,
+          "validateSum": {
+            "other": "mainEngineFuelModeBreakdown.mainEngineCSM-MGO-LNG-Percent",
+            "equals": 100,
+            "basedBy": "mainEngineFuelModeBreakdown.mainEngineCSM-MGO"
+          },
+          "showWhenAnd": [
+            {
+              "field": "mainEngineFuelModeBreakdown.mainEngineCSM-MGO",
+              "filled": true
+            },
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "mainEngineCSM-HSFO": {
+          "title": "Main Engine Operation CSM-HSFO Mode (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "minimum": 0,
+          "maximum": 2500
+        },
+        "mainEngineCSM-HSFO-LNG-Percent": {
+          "$ref": "#/definitions/percentageItem",
+          "title": "LNG %",
+          "marginLeft": 10,
+          "validateSum": {
+            "other": "mainEngineFuelModeBreakdown.mainEngineCSM-HSFO-Percent",
+            "equals": 100,
+            "basedBy": "mainEngineFuelModeBreakdown.mainEngineCSM-HSFO"
+          },
+          "showWhenAnd": [
+            {
+              "field": "mainEngineFuelModeBreakdown.mainEngineCSM-HSFO",
+              "filled": true
+            },
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "mainEngineCSM-HSFO-Percent": {
+          "$ref": "#/definitions/percentageItem",
+          "title": "HSFO %",
+          "marginLeft": 10,
+          "validateSum": {
+            "other": "mainEngineFuelModeBreakdown.mainEngineCSM-HSFO-LNG-Percent",
+            "equals": 100,
+            "basedBy": "mainEngineFuelModeBreakdown.mainEngineCSM-HSFO"
+          },
+          "showWhenAnd": [
+            {
+              "field": "mainEngineFuelModeBreakdown.mainEngineCSM-HSFO",
+              "filled": true
+            },
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "mainEngineCSM-VLSFO": {
+          "title": "Main Engine Operation CSM-VLSFO Mode (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "minimum": 0,
+          "maximum": 2500
+        },
+        "mainEngineCSM-VLSFO-LNG-Percent": {
+          "$ref": "#/definitions/percentageItem",
+          "title": "LNG %",
+          "marginLeft": 10,
+          "validateSum": {
+            "other": "mainEngineFuelModeBreakdown.mainEngineCSM-VLSFO-Percent",
+            "equals": 100,
+            "basedBy": "mainEngineFuelModeBreakdown.mainEngineCSM-VLSFO"
+          },
+          "showWhenAnd": [
+            {
+              "field": "mainEngineFuelModeBreakdown.mainEngineCSM-VLSFO",
+              "filled": true
+            },
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "mainEngineCSM-VLSFO-Percent": {
+          "$ref": "#/definitions/percentageItem",
+          "title": "VLSFO %",
+          "marginLeft": 10,
+          "validateSum": {
+            "other": "mainEngineFuelModeBreakdown.mainEngineCSM-VLSFO-LNG-Percent",
+            "equals": 100,
+            "basedBy": "mainEngineFuelModeBreakdown.mainEngineCSM-VLSFO"
+          },
+          "showWhenAnd": [
+            {
+              "field": "mainEngineFuelModeBreakdown.mainEngineCSM-VLSFO",
+              "filled": true
+            },
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "mainEngineDiesel-LSMGO": {
+          "title": "Main Engine Operation Diesel-LSMGO Mode (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "minimum": 0,
+          "maximum": 2500
+        },
+        "mainEngineDiesel-VLSFO": {
+          "title": "Main Engine Operation Diesel-VLSFO Mode (hh:mm)",
+          "type": "string",
+          "uiType": "time",
+          "minimum": 0,
+          "maximum": 2500
+        }
+      },
+      "showWhen": [
+        {
+          "field": "commonInfo.dualFuelVessel",
+          "equals": true
+        }
+      ]
+    },
+    "utilization": {
+      "title": "A/E Utilization SLR",
+      "type": "object",
+      "uiType": "utilizationTable",
+      "flatType": "table",
+      "properties": {
+        "auxiliary": {
+          "title": "Auxiliary utilization (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/utilizationRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": false
+            }
+          ]
+        },
+        "auxiliaryLng": {
+          "title": "Auxiliary utilization (hh:mm)",
+          "compoundFieldName": true,
+          "sumTime": "utilization.auxiliaryLng",
+          "$ref": "#/definitions/utilizationTotalRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "auxiliaryGas": {
+          "title": "Auxiliary Gas Mode (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/utilizationRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "auxiliaryDieselLSMGO": {
+          "title": "Auxiliary Diesel-LSMGO Mode (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/utilizationRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "auxiliaryDieselVLSFO": {
+          "title": "Auxiliary Diesel-VLSFO Mode (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/utilizationRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "auxiliaryCompoundFieldName": {
+          "title": "Auxiliary Power Produced (kW)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/utilizationEnergyRow"
+        },
+        "boiler": {
+          "title": "Boiler utilization (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/utilizationRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": false
+            }
+          ]
+        },
+        "boilerLng": {
+          "title": "Boiler utilization (hh:mm)",
+          "compoundFieldName": true,
+          "sumTime": "utilization.boilerLng",
+          "$ref": "#/definitions/boilerTotalRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "boilerGas": {
+          "title": "Boiler Gas Mode (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/boilerRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "boilerDieselLSMGO": {
+          "title": "Boiler Diesel-LSMGO Mode (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/boilerRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "boilerDieselVLSFO": {
+          "title": "Boiler Diesel-VLSFO Mode (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/boilerRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        },
+        "boilerDualGas": {
+          "title": "Boiler Dual-Gas & Fuel Mode (hh:mm)",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/boilerRow",
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "utilizationAdditional": {
+      "type": "object",
+      "title": "A/E Utilization SLR",
+      "uiType": "additionalSection",
+      "flatType": "combined",
+      "properties": {
+        "totalNumberOfAeRunning": {
+          "tooltip": "The amount of fuel tanks used",
+          "title": "Total Number of A/E Running",
+          "type": "number",
+          "uiType": "totalAeRunning",
+          "minimum": 0,
+          "hideWhenSelected": [
+            {
+              "value": 1,
+              "fields": [
+                "utilizationAdditional.reasonForRunningMoreThanOneAe"
+              ]
+            }
+          ]
+        },
+        "reasonForRunningMoreThanOneAe": {
+          "title": "Reason for running more than one A/E",
+          "type": "string"
+        }
+      }
+    },
+    "consumptions": {
+      "title": "Consumption SLR",
+      "type": "object",
+      "uiType": "consumption",
+      "flatType": "table",
+      "prepopulated": true,
+      "properties": {
+        "mainEngineAtSea": {
+          "title": "Main Engine at Sea",
+          "consumptionType": "MainEngineAtSea",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "auxEngineAtSea": {
+          "title": "Aux. Engine at Sea",
+          "consumptionType": "AuxEngineAtSea",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "mainEngineAtPortAnchorage": {
+          "title": "Main Engine at Port Anchorage",
+          "consumptionType": "MainEngineAtPort",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "auxEngineAtPortAnchorage": {
+          "title": "Aux. Engine at Port Anchorage",
+          "consumptionType": "AuxEngineAtPort",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "boiler": {
+          "title": "Boiler",
+          "consumptionType": "Boiler",
+          "$ref": "#/definitions/consumptionRow"
+        },
+        "other": {
+          "title": "Other",
+          "consumptionType": "Other",
+          "$ref": "#/definitions/consumptionRow"
+        }
+      },
+      "anyOf": [
+        {
+          "not": {}
+        },
+        {
+          "required": [
+            "mainEngineAtSea"
+          ]
+        },
+        {
+          "required": [
+            "auxEngineAtSea"
+          ]
+        },
+        {
+          "required": [
+            "mainEngineAtPortAnchorage"
+          ]
+        },
+        {
+          "required": [
+            "auxEngineAtPortAnchorage"
+          ]
+        },
+        {
+          "required": [
+            "boiler"
+          ]
+        },
+        {
+          "required": [
+            "other"
+          ]
+        }
+      ]
+    },
+    "extraConsumptionsData": {
+      "title": "Consumption SLR",
+      "type": "object",
+      "uiType": "additionalSection",
+      "flatType": "combined",
+      "properties": {
+        "bogLost": {
+          "title": "BOG Lost (MT)",
+          "type": "number",
+          "minimum": 0,
+          "decimals": 2,
+          "showWhen": [
+            {
+              "field": "commonInfo.dualFuelVessel",
+              "equals": true
+            }
+          ]
+        }
+      }
+    },
+    "lcv": {
+      "type": "object",
+      "title": "Lower Calorific Values (LCV)",
+      "uiType": "section",
+      "flatType": "combined",
+      "showWhen": [
+        {
+          "field": "consumptions",
+          "exist": true
+        }
+      ],
+      "properties": {
+        "lcvHsfo": {
+          "title": "LCV for HSFO (MJ/kg)",
+          "type": "number",
+          "showWhen": [
+            {
+              "field": "consumptions.mainEngineAtSea.hsfo",
+              "greaterThan": 0
+            },
+            {
+              "field": "consumptions.auxEngineAtSea.hsfo",
+              "greaterThan": 0
+            },
+            {
+              "field": "consumptions.mainEngineAtPortAnchorage.hsfo",
+              "greaterThan": 0
+            },
+            {
+              "field": "consumptions.auxEngineAtPortAnchorage.hsfo",
+              "greaterThan": 0
+            },
+            {
+              "field": "consumptions.boiler.hsfo",
+              "greaterThan": 0
+            },
+            {
+              "field": "consumptions.other.hsfo",
+              "greaterThan": 0
+            }
+          ],
+          "minimum": 20,
+          "maximum": 60
+        },
+        "lcvHfo": {
+          "title": "LCV for HFO VLSFO (MJ/kg)",
+          "type": "number",
+          "minimum": 20,
+          "maximum": 60,
+          "showWhen": [
+            {
+              "field": "consumptions.mainEngineAtSea.hfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtSea.hfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.mainEngineAtPortAnchorage.hfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtPortAnchorage.hfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.boiler.hfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.other.hfo",
+              "filled": true
+            }
+          ]
+        },
+        "lcvLfo": {
+          "title": "LCV for LFO VLSFO (MJ/kg)",
+          "type": "number",
+          "minimum": 20,
+          "maximum": 60,
+          "showWhen": [
+            {
+              "field": "consumptions.mainEngineAtSea.lfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtSea.lfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.mainEngineAtPortAnchorage.lfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtPortAnchorage.lfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.boiler.lfo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.other.lfo",
+              "filled": true
+            }
+          ]
+        },
+        "lcvLsmgo": {
+          "title": "LCV for LSMGO (MJ/kg)",
+          "type": "number",
+          "minimum": 20,
+          "maximum": 60,
+          "showWhen": [
+            {
+              "field": "consumptions.mainEngineAtSea.lsmgo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtSea.lsmgo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.mainEngineAtPortAnchorage.lsmgo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtPortAnchorage.lsmgo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.boiler.lsmgo",
+              "filled": true
+            },
+            {
+              "field": "consumptions.other.lsmgo",
+              "filled": true
+            }
+          ]
+        },
+        "lcvLng": {
+          "title": "LCV for LNG (MJ/kg)",
+          "type": "number",
+          "minimum": 20,
+          "maximum": 60,
+          "showWhen": [
+            {
+              "field": "consumptions.mainEngineAtSea.lng",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtSea.lng",
+              "filled": true
+            },
+            {
+              "field": "consumptions.mainEngineAtPortAnchorage.lng",
+              "filled": true
+            },
+            {
+              "field": "consumptions.auxEngineAtPortAnchorage.lng",
+              "filled": true
+            },
+            {
+              "field": "consumptions.boiler.lng",
+              "filled": true
+            },
+            {
+              "field": "consumptions.other.lng",
+              "filled": true
+            }
+          ]
+        }
+      }
+    },
+    "consumptionAdditional": {
+      "type": "object",
+      "title": "Consumption since last report",
+      "uiType": "additionalSection",
+      "flatType": "combined",
+      "properties": {
+        "meConsumptionCalculationMethod": {
+          "title": "M/E Consumption Calculation Method",
+          "type": "string",
+          "marginBottom": true,
+          "oneOf": [
+            {
+              "const": "ByMassFlowmeters",
+              "title": "By Mass Flowmeters"
+            },
+            {
+              "const": "ByVolumetricFlowmeters",
+              "title": "By Volumetric Flowmeters"
+            },
+            {
+              "const": "ByManualSoundings",
+              "title": "By Manual Soundings"
+            },
+            {
+              "const": "ByOtherMeansToSpecify",
+              "title": "By Other Means - To Specify"
+            }
+          ]
+        },
+        "reefer": {
+          "title": "Reefer Power (kWh)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 65000,
+          "decimals": 2,
+          "tooltip": "If unable to report Reefer Power kWh, keep this field empty"
+        },
+        "reeferConsumption": {
+          "title": "Reefer Consumption (mt)",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9999.99,
+          "decimals": 2
+        }
+      }
+    },
+    "fuelChangeOver": {
+      "title": "Fuel Change Over",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "fuelChangeOver": {
+          "title": "Fuel Change Over",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "Yes",
+              "fieldSchema": {
+                "fuelChangeOverDateAndTime": {
+                  "title": "Fuel Change Over Date and Time",
+                  "uiType": "dateTimeUtc",
+                  "utcLtSwitcher": true,
+                  "$ref": "#/definitions/dateTimeUtcOptional"
+                },
+                "fuelChangeOverPosition": {
+                  "title": "Fuel Change Over Position",
+                  "uiType": "position",
+                  "type": "object",
+                  "properties": {
+                    "latitude": {
+                      "type": "object",
+                      "title": "Fuel Change Over Position - Latitude",
+                      "properties": {
+                        "degrees": {
+                          "title": "Degrees",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 89
+                        },
+                        "minutes": {
+                          "title": "Minutes",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 59
+                        },
+                        "seconds": {
+                          "title": "Seconds",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 59
+                        },
+                        "direction": {
+                          "title": "Direction",
+                          "type": "string",
+                          "oneOf": [
+                            {
+                              "title": "",
+                              "const": ""
+                            },
+                            {
+                              "const": "North",
+                              "title": "N"
+                            },
+                            {
+                              "const": "South",
+                              "title": "S"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "degrees",
+                        "minutes",
+                        "seconds",
+                        "direction"
+                      ]
+                    },
+                    "longitude": {
+                      "type": "object",
+                      "title": "Fuel Change Over Position - Longitude",
+                      "properties": {
+                        "degrees": {
+                          "title": "Degrees",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 179
+                        },
+                        "minutes": {
+                          "title": "Minutes",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 59
+                        },
+                        "seconds": {
+                          "title": "Seconds",
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 59
+                        },
+                        "direction": {
+                          "title": "Direction",
+                          "type": "string",
+                          "oneOf": [
+                            {
+                              "title": "",
+                              "const": ""
+                            },
+                            {
+                              "const": "East",
+                              "title": "E"
+                            },
+                            {
+                              "const": "West",
+                              "title": "W"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "degrees",
+                        "minutes",
+                        "seconds",
+                        "direction"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "latitude",
+                    "longitude"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "LubeOilConsumptionSlr": {
+      "title": "Lube Oil Consumption SLR",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "mainEngineSystemOil": {
+          "title": "Main Engine System Oil (Liter)",
+          "type": "number",
+          "minimum": 0,
+          "decimals": 2
+        },
+        "auxiliaryEngineSystemOil": {
+          "title": "Auxiliary Engine System Oil (Liter)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "meCylinderOilHbn": {
+          "title": "ME Cylinder Oil [HBN] (Liter)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "meCylinderOilLbn": {
+          "title": "ME Cylinder Oil [LBN] (Liter)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "meEngineSystemOilRob": {
+          "title": "ROB M/E Engine System Oil (Liter)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "aeSystemOilRob": {
+          "title": "ROB A/E System Oil (Liter)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "meCylinderOilHbnRob": {
+          "title": "ROB ME Cylinder Oil [HBN] (Liter)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "meCylinderOilLbnRob": {
+          "title": "ROB ME Cylinder Oil [LBN] (Liter)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        }
+      },
+      "required": []
+    },
+    "cylinderConsumption": {
+      "title": "Cylinder Consumption",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "oilSetFeedRate": {
+          "title": "Oil Set Feed Rate (gms/kWh)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "oilActualFeedRate": {
+          "title": "Oil Actual Feed Rate (gms/kWh)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        }
+      },
+      "required": []
+    },
+    "tankSummary": {
+      "title": "Fuel Oil Remaining on board",
+      "type": "object",
+      "uiType": "tankSummaryTable",
+      "flatType": "table",
+      "isHidden": true,
+      "patternProperties": {
+        "^\\d+tank$": {
+          "title": "Tank",
+          "compoundFieldName": true,
+          "$ref": "#/definitions/tankSummaryRow"
+        }
+      },
+      "additionalProperties": false,
+      "required": []
+    },
+    "bunkerDatas": {
+      "title": "Fuel Oil Remaining on board",
+      "type": "object",
+      "noHeader": true,
+      "uiType": "bunkerTable",
+      "noHsfoWarning": true,
+      "flatType": "table",
+      "properties": {
+        "totalRobPerBunkerGrade": {
+          "title": "Total ROB per bunker grade (mt)",
+          "prepopulated": true,
+          "bunkerDataType": "Rob",
+          "sumTankSummary": "rob",
+          "$ref": "#/definitions/oilRow"
+        },
+        "expectedRobAtEosp": {
+          "title": "Expected ROB at EOSP",
+          "prepopulated": true,
+          "bunkerDataType": "RobArrivalNextPort",
+          "showCellByCondition": true,
+          "$ref": "#/definitions/oilRowOptional"
+        }
+      },
+      "required": [
+        "totalRobPerBunkerGrade"
+      ]
+    },
+    "manualRobSounding": {
+      "title": "Fuel Oil Remaining on board",
+      "type": "object",
+      "uiType": "additionalSection",
+      "flatType": "combined",
+      "properties": {
+        "manualSoundingTaken": {
+          "title": "Was Manual ROB Sounding Taken?",
+          "type": "string",
+          "uiType": "radio",
+          "default": "Yes",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            }
+          ],
+          "hideWhenSelected": [
+            {
+              "value": "Yes",
+              "fields": [
+                "manualRobSounding.reasonNotTaken"
+              ]
+            },
+            {
+              "value": "No",
+              "fields": [
+                "manualRobSounding.soundingPIC"
+              ]
+            },
+            {
+              "value": "",
+              "fields": [
+                "manualRobSounding.soundingPIC",
+                "manualRobSounding.reasonNotTaken"
+              ]
+            }
+          ]
+        },
+        "soundingPIC": {
+          "title": "Sounding PIC Rank/Name",
+          "type": "string",
+          "uiType": "string",
+          "minLength": 1
+        },
+        "reasonNotTaken": {
+          "title": "Reason for Not Taking Manual Sounding",
+          "type": "string",
+          "uiType": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "manualSoundingTaken"
+      ]
+    },
+    "scrubber": {
+      "title": "Scrubber",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "scrubberOperationalStatus": {
+          "title": "Operational Status",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "NotRunning",
+              "title": "Not Running"
+            },
+            {
+              "const": "Running",
+              "title": "Running"
+            },
+            {
+              "const": "Na",
+              "title": "N/A"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "Running",
+              "fieldSchema": {
+                "scrubberUtilization": {
+                  "title": "Scrubber Utilization (hh:mm)",
+                  "type": "string",
+                  "uiType": "time"
+                },
+                "scrubberLoad": {
+                  "title": "Scrubber Load (kW)",
+                  "type": "number",
+                  "decimals": 2,
+                  "minimum": 0
+                },
+                "scrubberConsumption": {
+                  "title": "Scrubber Consumption (mt)",
+                  "type": "number",
+                  "minimum": 0,
+                  "decimals": 2,
+                  "marginBottom": true
+                }
+              }
+            },
+            {
+              "value": "NotRunning",
+              "fieldSchema": {
+                "reasonScrubberNotRunning": {
+                  "title": "Reason",
+                  "type": "string",
+                  "marginBottom": true
+                }
+              }
+            }
+          ]
+        },
+        "scrubberChangeOver": {
+          "title": "Change Over",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            },
+            {
+              "const": "Na",
+              "title": "N/A"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "Yes",
+              "fieldSchema": {
+                "scrubberChangeOverDate": {
+                  "title": "Scrubber Change Over",
+                  "uiType": "dateTimeUtc",
+                  "utcLtSwitcher": true,
+                  "$ref": "#/definitions/dateTimeUtcOptional"
+                },
+                "distanceFromPilotStation": {
+                  "title": "Distance From Pilot Station (nm)",
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            },
+            {
+              "value": "No",
+              "fieldSchema": {
+                "reasonNoScrubberChangeOver": {
+                  "title": "Reason",
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "freshWater": {
+      "title": "Fresh Water",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "freshWaterProducedSlr": {
+          "title": "Fresh Water Produced SLR",
+          "decimals": 2,
+          "type": "number",
+          "minimum": 0
+        },
+        "freshWaterConsumptionSlr": {
+          "title": "Fresh Water Consumption SLR",
+          "decimals": 2,
+          "type": "number",
+          "minimum": 0
+        },
+        "freshWaterRob": {
+          "title": "Fresh Water ROB",
+          "type": "number",
+          "minimum": 0,
+          "decimals": 2
+        },
+        "freshWaterGeneratorRunningHoursSlr": {
+          "title": "Fresh Water Generator Running hours SLR (h)",
+          "decimals": 2,
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "freshWaterProducedSlr",
+        "freshWaterConsumptionSlr",
+        "freshWaterRob",
+        "freshWaterGeneratorRunningHoursSlr"
+      ]
+    },
+    "sludge": {
+      "title": "Sludge",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "sludgeRob": {
+          "title": "Sludge ROB (m3)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0,
+          "maximum": 295.1
+        },
+        "sludgeDisposed": {
+          "title": "Sludge incinerated SLR (m3)",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "mgoConsumption": {
+          "title": "MGO Consumption Incinerator SLR",
+          "type": "number",
+          "decimals": 2,
+          "minimum": 0
+        },
+        "incineratorRunningHours": {
+          "title": "Incinerator Running Hours (h)",
+          "decimals": 2,
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "sludgeRob",
+        "sludgeDisposed",
+        "mgoConsumption",
+        "incineratorRunningHours"
+      ]
+    },
+    "bilge": {
+      "title": "Bilge",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "bilgeTankRob": {
+          "title": "Bilge Tank ROB (m3)",
+          "decimals": 2,
+          "type": "number",
+          "minimum": 0
+        },
+        "bilgeGeneratedInLast24H": {
+          "title": "Bilge Generated in Last 24h (m3)",
+          "decimals": 2,
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "bilgeTankRob",
+        "bilgeGeneratedInLast24H"
+      ]
+    },
+    "umsOperation": {
+      "title": "UMS Operation",
+      "type": "object",
+      "uiType": "conditionalSection",
+      "flatType": "combined",
+      "properties": {
+        "umsOperationPerformed": {
+          "title": "UMS Operation performed?",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            },
+            {
+              "const": "Na",
+              "title": "N/A"
+            }
+          ],
+          "showWhenSelected": [
+            {
+              "value": "No",
+              "fieldSchema": {
+                "reasonNoUmsOperationPerformed": {
+                  "title": "Reason",
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "weather": {
+      "title": "Weather",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "wind": {
+          "title": "Wind",
+          "type": "object",
+          "uiType": "oneLine",
+          "prepopulated": true,
+          "properties": {
+            "windSpeed": {
+              "title": "Speed (kn)",
+              "type": "number",
+              "decimals": 2,
+              "minimum": 0,
+              "maximum": 5000
+            },
+            "windDirection": {
+              "title": "Direction coming from",
+              "$ref": "#/definitions/direction"
+            }
+          },
+          "required": [
+            "windSpeed",
+            "windDirection"
+          ]
+        },
+        "swell": {
+          "title": "Swell",
+          "type": "object",
+          "uiType": "oneLine",
+          "prepopulated": true,
+          "properties": {
+            "swellHeight": {
+              "title": "Height (m)",
+              "type": "number",
+              "decimals": 2,
+              "minimum": 0,
+              "maximum": 30
+            },
+            "swellDirection": {
+              "title": "Direction going to",
+              "$ref": "#/definitions/direction"
+            }
+          },
+          "required": [
+            "swellHeight",
+            "swellDirection"
+          ]
+        },
+        "sea": {
+          "title": "Sea",
+          "type": "object",
+          "uiType": "oneLine",
+          "prepopulated": true,
+          "properties": {
+            "seasHeight": {
+              "title": "Height (m)",
+              "type": "number",
+              "decimals": 2,
+              "minimum": 0,
+              "maximum": 30
+            },
+            "seasDirection": {
+              "title": "Direction going to",
+              "reportSubType": "dailyReportAtSea",
+              "$ref": "#/definitions/direction"
+            }
+          },
+          "required": [
+            "seasHeight",
+            "seasDirection"
+          ]
+        },
+        "current": {
+          "title": "Current",
+          "type": "object",
+          "uiType": "oneLine",
+          "properties": {
+            "currentKn": {
+              "title": "Speed (kn)",
+              "type": "number",
+              "reportSubType": "dailyReportAtSea",
+              "decimals": 2,
+              "minimum": 0,
+              "maximum": 100
+            },
+            "currentDirection": {
+              "title": "Direction going to",
+              "reportSubType": "dailyReportAtSea",
+              "$ref": "#/definitions/direction"
+            }
+          },
+          "required": [
+            "currentKn",
+            "currentDirection"
+          ]
+        }
+      },
+      "required": [
+        "wind",
+        "swell",
+        "sea",
+        "current"
+      ]
+    },
+    "remarks": {
+      "title": "Remarks",
+      "type": "object",
+      "uiType": "section",
+      "flatType": "combined",
+      "properties": {
+        "internalExternalFactorAffectShipsPerformance": {
+          "title": "Internal / External Factor affect Ship's Performance",
+          "type": "string",
+          "oneOf": [
+            {
+              "const": "Yes",
+              "title": "Yes"
+            },
+            {
+              "const": "No",
+              "title": "No"
+            }
+          ],
+          "requiredWhenSelected": [
+            {
+              "value": "Yes",
+              "fields": [
+                "remarks.remarks"
+              ]
+            }
+          ]
+        },
+        "remarks": {
+          "title": "General Comments",
+          "type": "string",
+          "uiType": "textarea",
+          "maximum": 200
+        },
+        "intendedRouteComments": {
+          "title": "Intended Route Comments",
+          "type": "string",
+          "uiType": "textarea",
+          "maximum": 200
+        },
+        "machineryComments": {
+          "title": "Machinery Comments",
+          "type": "string",
+          "uiType": "textarea",
+          "maximum": 200
+        }
+      },
+      "required": [
+        "internalExternalFactorAffectShipsPerformance"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtSea": {
+                "properties": {
+                  "hsfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hsfo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHsfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtSea": {
+                "properties": {
+                  "hsfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hsfo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHsfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtPortAnchorage": {
+                "properties": {
+                  "hsfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hsfo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHsfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtPortAnchorage": {
+                "properties": {
+                  "hsfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hsfo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHsfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "boiler": {
+                "properties": {
+                  "hsfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hsfo"
+                ]
+              }
+            },
+            "required": [
+              "boiler"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHsfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "other": {
+                "properties": {
+                  "hsfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hsfo"
+                ]
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHsfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtSea": {
+                "properties": {
+                  "hfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hfo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtSea": {
+                "properties": {
+                  "hfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hfo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtPortAnchorage": {
+                "properties": {
+                  "hfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hfo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtPortAnchorage": {
+                "properties": {
+                  "hfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hfo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "boiler": {
+                "properties": {
+                  "hfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hfo"
+                ]
+              }
+            },
+            "required": [
+              "boiler"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "other": {
+                "properties": {
+                  "hfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "hfo"
+                ]
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvHfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtSea": {
+                "properties": {
+                  "lfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lfo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtSea": {
+                "properties": {
+                  "lfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lfo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtPortAnchorage": {
+                "properties": {
+                  "lfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lfo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtPortAnchorage": {
+                "properties": {
+                  "lfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lfo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "boiler": {
+                "properties": {
+                  "lfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lfo"
+                ]
+              }
+            },
+            "required": [
+              "boiler"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "other": {
+                "properties": {
+                  "lfo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lfo"
+                ]
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLfo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtSea": {
+                "properties": {
+                  "lsmgo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lsmgo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLsmgo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtSea": {
+                "properties": {
+                  "lsmgo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lsmgo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLsmgo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtPortAnchorage": {
+                "properties": {
+                  "lsmgo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lsmgo"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLsmgo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtPortAnchorage": {
+                "properties": {
+                  "lsmgo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lsmgo"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLsmgo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "boiler": {
+                "properties": {
+                  "lsmgo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lsmgo"
+                ]
+              }
+            },
+            "required": [
+              "boiler"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLsmgo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "other": {
+                "properties": {
+                  "lsmgo": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lsmgo"
+                ]
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLsmgo"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtSea": {
+                "properties": {
+                  "lng": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lng"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLng"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtSea": {
+                "properties": {
+                  "lng": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lng"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtSea"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLng"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "mainEngineAtPortAnchorage": {
+                "properties": {
+                  "lng": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lng"
+                ]
+              }
+            },
+            "required": [
+              "mainEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLng"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "auxEngineAtPortAnchorage": {
+                "properties": {
+                  "lng": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lng"
+                ]
+              }
+            },
+            "required": [
+              "auxEngineAtPortAnchorage"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLng"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "boiler": {
+                "properties": {
+                  "lng": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lng"
+                ]
+              }
+            },
+            "required": [
+              "boiler"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLng"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consumptions": {
+            "properties": {
+              "other": {
+                "properties": {
+                  "lng": {
+                    "not": {
+                      "const": 0
+                    }
+                  }
+                },
+                "required": [
+                  "lng"
+                ]
+              }
+            },
+            "required": [
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "consumptions"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lcv": {
+            "required": [
+              "lcvLng"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "manualRobSounding": {
+            "properties": {
+              "manualSoundingTaken": {
+                "const": "Yes"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "manualRobSounding": {
+            "required": [
+              "soundingPIC"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "manualRobSounding": {
+            "properties": {
+              "manualSoundingTaken": {
+                "const": "No"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "manualRobSounding": {
+            "required": [
+              "reasonNotTaken"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "utilizationAdditional": {
+            "properties": {
+              "totalNumberOfAeRunning": {
+                "type": "number",
+                "exclusiveMinimum": 1
+              }
+            },
+            "required": [
+              "totalNumberOfAeRunning"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "utilizationAdditional": {
+            "required": [
+              "reasonForRunningMoreThanOneAe"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mainEngineFuelModeBreakdown": {
+            "properties": {
+              "mainEngineCSM-VLSFO": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "mainEngineCSM-VLSFO"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "mainEngineFuelModeBreakdown": {
+            "required": [
+              "mainEngineCSM-VLSFO-LNG-Percent",
+              "mainEngineCSM-VLSFO-Percent"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mainEngineFuelModeBreakdown": {
+            "properties": {
+              "mainEngineCSM-MGO": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "mainEngineCSM-MGO"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "mainEngineFuelModeBreakdown": {
+            "required": [
+              "mainEngineCSM-MGO-LNG-Percent",
+              "mainEngineCSM-MGO-Percent"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "mainEngineFuelModeBreakdown": {
+            "properties": {
+              "mainEngineCSM-HSFO": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "mainEngineCSM-HSFO"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "mainEngineFuelModeBreakdown": {
+            "required": [
+              "mainEngineCSM-HSFO-LNG-Percent",
+              "mainEngineCSM-HSFO-Percent"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "ballast": {
+            "properties": {
+              "reasonForExceedingPlannedBallast": {
+                "const": "Other"
+              }
+            },
+            "required": [
+              "reasonForExceedingPlannedBallast"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "ballast": {
+            "required": [
+              "reasonForExceedingPlannedBallastOther"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "arrivalCondition": {
+            "properties": {
+              "midDraftSource": {
+                "const": "Calculated"
+              }
+            },
+            "required": [
+              "midDraftSource"
+            ]
+          }
+        },
+        "required": [
+          "arrivalCondition"
+        ]
+      },
+      "then": {
+        "required": [
+          "arrivalCondition"
+        ],
+        "properties": {
+          "arrivalCondition": {
+            "type": "object",
+            "required": [
+              "midDraftCalculationReason"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "commonInfo": {
+            "properties": {
+              "dualFuelVessel": {
+                "const": true
+              }
+            },
+            "required": [
+              "dualFuelVessel"
+            ]
+          }
+        },
+        "required": [
+          "commonInfo"
+        ]
+      },
+      "then": {
+        "required": [
+          "utilization"
+        ],
+        "properties": {
+          "utilization": {
+            "type": "object",
+            "required": [
+              "auxiliaryLng",
+              "auxiliaryCompoundFieldName"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "commonInfo": {
+            "properties": {
+              "dualFuelVessel": {
+                "const": false
+              }
+            },
+            "required": [
+              "dualFuelVessel"
+            ]
+          }
+        },
+        "required": [
+          "commonInfo"
+        ]
+      },
+      "then": {
+        "required": [
+          "utilization"
+        ],
+        "properties": {
+          "utilization": {
+            "type": "object",
+            "required": [
+              "auxiliary",
+              "auxiliaryCompoundFieldName"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "required": [
+    "commonInfo",
+    "nextPortInformation",
+    "sinceLastDailyReport",
+    "bunkerDatas",
+    "consumptions",
+    "lcv",
+    "arrivalCondition",
+    "utilization"
+  ]
+}

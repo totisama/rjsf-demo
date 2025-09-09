@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { RJSFSchema } from '@rjsf/utils'
-import eventSchema from '../../eventSchema.json'
+import eventSchema from '../../mocks/eventSchema.json'
 import { DynamicForm } from './dynamic-form'
 import { ConsumptionTableField } from '../fields/consumption-table-field'
 import { DebugPanel } from '../debug-panel'
@@ -33,7 +33,7 @@ export const EventForm = () => {
         }}
         widgets={{
           Email: EmailWidget,
-          RadioPills: RadioWidget,
+          Radio: RadioWidget,
           Textarea: TextareaWidget,
         }}
         onChange={(data) => setFormData(data as Record<string, unknown>)}
