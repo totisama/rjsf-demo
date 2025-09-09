@@ -13,3 +13,13 @@ export interface TableBehavior {
 export type Priority = 'low' | 'medium' | 'high'
 
 export type Row = Record<string, number | undefined>
+
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | { [k: string]: JSONValue }
+
+export type JSONObject = { [k: string]: JSONValue }

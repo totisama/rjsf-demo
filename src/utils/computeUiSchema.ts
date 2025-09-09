@@ -15,13 +15,20 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
         case 'consumption':
           leafUiSchema['ui:field'] = 'ConsumptionTable'
           break
-
+        case 'utilizationTable':
+          break
         case 'bunkerTable':
           leafUiSchema['ui:field'] = 'BunkerTable'
+          break
+        case 'tankSummaryTable':
           break
 
         case 'dateTimeUtc':
           leafUiSchema['ui:field'] = 'DateTimeUtc'
+          break
+        case 'ETADateTimeUtc':
+          break
+        case 'time':
           break
 
         case 'position':
@@ -29,19 +36,36 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
           break
 
         case 'section':
-          leafUiSchema['ui:field'] = 'Section'
+        case 'conditionalSection':
+        case 'additionalSection':
           break
 
         case 'radio':
-          leafUiSchema['ui:widget'] = 'RadioPills'
+          leafUiSchema['ui:widget'] = 'Radio'
           break
-
+        case 'checkbox':
+          break
         case 'email':
           leafUiSchema['ui:widget'] = 'Email'
           break
-
         case 'remarks':
+        case 'textarea':
           leafUiSchema['ui:widget'] = 'Textarea'
+          break
+
+        case 'fullVoyageNumber':
+          break
+        case 'percentageOf':
+        case 'requiredSpeed':
+        case 'speedCalculator':
+        case 'timeDifference':
+        case 'totalAeRunning':
+        case 'oneLine':
+        case 'calculated':
+          leafUiSchema['ui:readonly'] = true
+          break
+
+        case 'port':
           break
       }
 
