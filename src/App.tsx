@@ -3,6 +3,7 @@ import { TodoForm } from './components/forms/todo-form'
 import { FirstForm } from './components/forms/first-form'
 import { SecondForm } from './components/forms/second-form'
 import { EventForm } from './components/forms/event-form'
+import { DailyAtSeaForm } from './components/forms/daily-at-sea-form'
 import './App.css'
 
 const forms = {
@@ -10,12 +11,13 @@ const forms = {
   first: { label: 'First Form', component: <FirstForm /> },
   second: { label: 'Second Form', component: <SecondForm /> },
   event: { label: 'Event Form', component: <EventForm /> },
+  dailyAtSea: { label: 'Daily at Sea Form', component: <DailyAtSeaForm /> },
 } as const
 
 type FormType = keyof typeof forms
 
 function App() {
-  const [activeForm, setActiveForm] = useState<FormType>('event')
+  const [activeForm, setActiveForm] = useState<FormType>('dailyAtSea')
 
   return (
     <div>
