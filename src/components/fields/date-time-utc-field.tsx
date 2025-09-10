@@ -21,7 +21,6 @@ export const DateTimeUtcField = ({
       (schema.properties as Record<string, RJSFSchema>)?.utc &&
       (schema.properties as Record<string, RJSFSchema>).utc.oneOf) ||
     []
-  console.log({ utcOneOf })
   const utcOptions = Array.isArray(utcOneOf)
     ? utcOneOf
         .filter(

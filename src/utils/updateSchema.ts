@@ -10,6 +10,13 @@ type ShowWhenRule = {
 
 type ShowWhen = ShowWhenRule[] | string
 
+type ShowWhenSelectedItem = {
+  value: JSONValue
+  fieldSchema: Record<string, RJSFSchema>
+  required?: boolean
+}
+type ShowWhenSelected = ShowWhenSelectedItem[]
+
 function getValueByPath(obj: unknown, path: string): unknown {
   if (!obj || !path) {
     return undefined
@@ -73,7 +80,7 @@ function evaluateShowWhen(formData: JSONObject, rules?: ShowWhen): boolean {
     return true
   }
 
-  return rules.some((r) => ruleMatches(formData, r))
+  return rules.some((rule) => ruleMatches(formData, rule))
 }
 
 function evaluateShowWhenAnd(formData: JSONObject, rules?: ShowWhen): boolean {
@@ -85,7 +92,20 @@ function evaluateShowWhenAnd(formData: JSONObject, rules?: ShowWhen): boolean {
     return true
   }
 
-  return rules.every((r) => ruleMatches(formData, r))
+  return rules.every((rule) => ruleMatches(formData, rule))
+}
+
+function findShowWhenSelectedMatch(
+  formData: JSONObject,
+  controllerPath: string,
+  items?: ShowWhenSelected
+): ShowWhenSelectedItem | undefined {
+  if (!items || items.length === 0) {
+    return undefined
+  }
+  const current = getValueByPath(formData, controllerPath)
+
+  return items.find((item) => item.value === current)
 }
 
 export function updateSchema(
@@ -102,35 +122,107 @@ export function updateSchema(
   for (const [sectionKey, sectionNode] of Object.entries(
     newSchema.properties
   )) {
-    const section = sectionNode as RJSFSchema | undefined
-    const sectionProps = section?.properties as
+    const sectionSchema = sectionNode as RJSFSchema | undefined
+    const sectionProperties = sectionSchema?.properties as
       | Record<string, RJSFSchema>
       | undefined
 
-    if (!sectionProps) {
+    if (!sectionProperties) {
       continue
     }
 
-    for (const [fieldKey, fieldSchema] of Object.entries(sectionProps)) {
-      const field = fieldSchema as RJSFSchema & {
+    for (const [fieldKey, fieldSchema] of Object.entries(sectionProperties)) {
+      const fieldDefinition = fieldSchema as RJSFSchema & {
         showWhen?: ShowWhen
         showWhenAnd?: ShowWhen
+        showWhenSelected?: ShowWhenSelected
       }
-      const showOr = evaluateShowWhen(newData, field.showWhen)
-      const showAnd = evaluateShowWhenAnd(newData, field.showWhenAnd)
+
+      const showOr = evaluateShowWhen(newData, fieldDefinition.showWhen)
+      const showAnd = evaluateShowWhenAnd(newData, fieldDefinition.showWhenAnd)
       const shouldShow = showOr && showAnd
+      const sectionObject = newSchema.properties?.[sectionKey] as
+        | RJSFSchema
+        | undefined
 
+      // If this field is not visible, also clean up any extra fields that were previously added because of it
       if (!shouldShow) {
-        const sec = newSchema.properties?.[sectionKey] as RJSFSchema | undefined
-
-        if (sec?.properties) {
-          delete sec.properties[fieldKey]
+        if (sectionObject?.properties) {
+          delete sectionObject.properties[fieldKey]
         }
-        if (Array.isArray(sec?.required)) {
-          sec.required = sec.required.filter((k) => k !== fieldKey)
+
+        if (Array.isArray(sectionObject?.required)) {
+          sectionObject.required = sectionObject.required.filter(
+            (fieldName) => fieldName !== fieldKey
+          )
         }
 
         deletePropertyByPath(newData, `${sectionKey}.${fieldKey}`)
+        if (fieldDefinition.showWhenSelected && sectionObject?.properties) {
+          for (const item of fieldDefinition.showWhenSelected) {
+            for (const injectedKey of Object.keys(item.fieldSchema)) {
+              delete sectionObject.properties[injectedKey]
+
+              if (Array.isArray(sectionObject.required)) {
+                sectionObject.required = sectionObject.required.filter(
+                  (fieldName) => fieldName !== injectedKey
+                )
+              }
+
+              deletePropertyByPath(newData, `${sectionKey}.${injectedKey}`)
+            }
+          }
+        }
+
+        continue
+      }
+
+      if (fieldDefinition.showWhenSelected) {
+        const controllerPath = `${sectionKey}.${fieldKey}`
+        const match = findShowWhenSelectedMatch(
+          newData,
+          controllerPath,
+          fieldDefinition.showWhenSelected
+        )
+
+        // Remove any injected fields that dont match the current selection
+        if (sectionObject?.properties) {
+          for (const item of fieldDefinition.showWhenSelected) {
+            for (const injectedKey of Object.keys(item.fieldSchema)) {
+              if (!match || !(injectedKey in match.fieldSchema)) {
+                delete sectionObject.properties[injectedKey]
+
+                if (Array.isArray(sectionObject.required)) {
+                  sectionObject.required = sectionObject.required.filter(
+                    (fieldName) => fieldName !== injectedKey
+                  )
+                }
+                deletePropertyByPath(newData, `${sectionKey}.${injectedKey}`)
+              }
+            }
+          }
+        }
+
+        // Inject matching fields
+        if (match) {
+          sectionObject!.properties ??= {}
+
+          for (const [injectedKey, injectedSchema] of Object.entries(
+            match.fieldSchema
+          )) {
+            sectionObject!.properties[injectedKey] = injectedSchema
+          }
+
+          if (match.required) {
+            sectionObject!.required ??= []
+
+            for (const injectedKey of Object.keys(match.fieldSchema)) {
+              if (!sectionObject!.required.includes(injectedKey)) {
+                sectionObject!.required.push(injectedKey)
+              }
+            }
+          }
+        }
       }
     }
   }
