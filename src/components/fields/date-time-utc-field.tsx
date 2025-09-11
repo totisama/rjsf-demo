@@ -49,7 +49,8 @@ export const DateTimeUtcField = ({
       />
       <label>Time (hh:mm):</label>
       <input
-        type="number"
+        type="time"
+        step={60}
         value={data.time ?? ''}
         onChange={(e) => handleChange('time', e.target.value)}
         disabled={!canEdit}

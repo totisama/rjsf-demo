@@ -14,6 +14,8 @@ import { FieldTemplateNoError } from '../templates/field-template-no-error'
 import { parseDefinitionsIntoSchema } from '../../utils/parseDefinitionsIntoSchema'
 import { updateSchema } from '../../utils/updateSchema'
 import type { JSONObject } from '../../types'
+import { prepareInitialFormData } from '../../utils/prepareInitialFormData'
+import { DebugPanel } from '../debug-panel'
 
 type DynamicFormProps = {
   schema: RJSFSchema
@@ -41,6 +43,12 @@ export const DynamicForm = ({
     () => parseDefinitionsIntoSchema(schema),
     [schema]
   )
+  const preparedDefaults = useMemo(
+    () => prepareInitialFormData(parsedSchema),
+    [parsedSchema]
+  )
+  const initialFormData =
+    Object.keys(formData ?? {}).length > 0 ? formData : preparedDefaults
   const [dynamicSchema, setDynamicSchema] = useState<RJSFSchema>(parsedSchema)
   const [dynamicUiSchema, setDynamicUiSchema] = useState<UiSchema>(() =>
     computeUiSchema(parsedSchema)
@@ -60,33 +68,33 @@ export const DynamicForm = ({
 
   useEffect(() => {
     const dataObj = (formData ?? {}) as JSONObject
-    const { schema: updatedSchema, formData: cleaned } = updateSchema(
-      parsedSchema,
-      dataObj
-    )
+    const { schema: updatedSchema } = updateSchema(parsedSchema, dataObj)
     setDynamicSchema(updatedSchema)
     setDynamicUiSchema(computeUiSchema(updatedSchema))
   }, [parsedSchema, formData])
 
   return (
-    <Form
-      formData={formData}
-      schema={dynamicSchema}
-      uiSchema={dynamicUiSchema}
-      validator={validator}
-      fields={{ ...fields, ...extraFields }}
-      widgets={{ ...widgets }}
-      templates={{
-        FieldTemplate: FieldTemplateNoError,
-        ErrorListTemplate,
-      }}
-      experimental_defaultFormStateBehavior={{
-        emptyObjectFields: 'skipEmptyDefaults',
-        constAsDefaults: 'skipOneOf',
-      }}
-      showErrorList="bottom"
-      onChange={handleChange}
-      onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
-    />
+    <>
+      <Form
+        formData={initialFormData}
+        schema={dynamicSchema}
+        uiSchema={dynamicUiSchema}
+        validator={validator}
+        fields={{ ...fields, ...extraFields }}
+        widgets={{ ...widgets }}
+        templates={{
+          FieldTemplate: FieldTemplateNoError,
+          ErrorListTemplate,
+        }}
+        experimental_defaultFormStateBehavior={{
+          emptyObjectFields: 'skipEmptyDefaults',
+          constAsDefaults: 'skipOneOf',
+        }}
+        showErrorList="bottom"
+        onChange={handleChange}
+        onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
+      />
+      <DebugPanel data={initialFormData} />
+    </>
   )
 }

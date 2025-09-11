@@ -2,7 +2,6 @@ import { useState } from 'react'
 import type { RJSFSchema } from '@rjsf/utils'
 import { DynamicForm } from './dynamic-form'
 import { ConsumptionTableField } from '../fields/consumption-table-field'
-import { DebugPanel } from '../debug-panel'
 import { EmailWidget } from '../widgets/email-widget'
 import { PositionField } from '../fields/position-field'
 import { DateTimeUtcField } from '../fields/date-time-utc-field'
@@ -39,8 +38,6 @@ export const DailyAtSeaForm = () => {
         onChange={(data) => setFormData(data as Record<string, unknown>)}
         onSubmit={handleSubmit}
       />
-
-      <DebugPanel data={formData} />
     </div>
   )
 }
