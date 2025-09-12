@@ -1,17 +1,38 @@
 import { useMemo, useState } from 'react'
 import type { FieldProps, RJSFSchema } from '@rjsf/utils'
 import type { Row } from '../../types'
+import {
+  evaluateShowWhen,
+  evaluateShowWhenAnd,
+  type ShowWhen,
+} from '../../utils/updateSchema'
+import { evaluateFormula } from '../../utils/evalFormula'
 
 interface ColMeta {
   key: string
   label: string
   min?: number
   max?: number
+  schema?: RJSFSchema
+  isCalculated?: boolean
+  formula?: string
 }
 
 export function ConsumptionTableField(props: FieldProps) {
-  const { schema, formData, onChange, disabled, readonly, registry } = props
+  const {
+    schema,
+    formData,
+    onChange,
+    disabled,
+    readonly,
+    registry,
+    formContext,
+  } = props
   const [selectedKeys, setSelectedKeys] = useState<string[]>([])
+  const rootFormData = useMemo(
+    () => formContext?.rootFormData ?? {},
+    [formContext?.rootFormData]
+  )
 
   const properties = useMemo(() => schema.properties ?? {}, [schema.properties])
   const allOptions = useMemo(() => {
@@ -58,27 +79,58 @@ export function ConsumptionTableField(props: FieldProps) {
       RJSFSchema
     >
 
-    return Object.keys(rowProperties).map((propertyKey) => {
-      const propertySchema = rowProperties[propertyKey] as RJSFSchema
+    const raw = Object.entries(rowProperties).map(
+      ([propertyKey, propertySchema]) => {
+        const ps = propertySchema as RJSFSchema & {
+          uiType?: string
+          calculationFormula?: string
+          showWhen?: ShowWhen
+          showWhenAnd?: ShowWhen
+        }
+        const isCalculated = ps.uiType === 'calculated'
+        const formula =
+          typeof ps.calculationFormula === 'string'
+            ? ps.calculationFormula
+            : undefined
 
-      return {
-        key: propertyKey,
-        label: propertySchema.fuelType ?? propertyKey,
-        min:
-          typeof propertySchema.minimum === 'number'
-            ? propertySchema.minimum
-            : undefined,
-        max:
-          typeof propertySchema.maximum === 'number'
-            ? propertySchema.maximum
-            : undefined,
+        return {
+          key: propertyKey,
+          label: ps.fuelType ?? propertyKey,
+          min: typeof ps.minimum === 'number' ? ps.minimum : undefined,
+          max: typeof ps.maximum === 'number' ? ps.maximum : undefined,
+          schema: ps,
+          isCalculated,
+          formula,
+          __show: evaluateShowWhen(rootFormData, ps.showWhen),
+          __showAnd: evaluateShowWhenAnd(rootFormData, ps.showWhenAnd),
+        }
       }
-    })
-  }, [properties, registry.schemaUtils, formData])
+    )
+
+    return raw.filter((c) => c.__show && c.__showAnd)
+  }, [properties, registry.schemaUtils, formData, rootFormData])
   const canEdit = !(disabled || readonly)
 
   const ensureSectionData = () =>
-    typeof formData === 'object' && formData !== null ? formData : {}
+    typeof formData === 'object' && formData !== null
+      ? (formData as Record<string, Row>)
+      : ({} as Record<string, Row>)
+
+  const recomputeCalculatedForRow = (row: Row, cols: ColMeta[]): Row => {
+    const nextRow: Row = { ...row }
+
+    cols.forEach((col) => {
+      if (col.isCalculated && col.formula) {
+        const val = evaluateFormula(
+          col.formula,
+          nextRow as Record<string, unknown>
+        )
+        nextRow[col.key] = Number.isFinite(val as number) ? val : undefined
+      }
+    })
+
+    return nextRow
+  }
 
   const handleSelectedOptionsChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -92,12 +144,16 @@ export function ConsumptionTableField(props: FieldProps) {
   }
 
   const addRow = (rowKey: string) => {
-    if (!rowKey || selectedKeys.includes(rowKey)) return
+    if (!rowKey || selectedKeys.includes(rowKey)) {
+      return
+    }
+
     setSelectedKeys((prev) => [...prev, rowKey])
 
     const current = ensureSectionData()
-    const nextRow: Row = current[rowKey] ?? {}
-    onChange({ ...current, [rowKey]: nextRow })
+    const row: Row = current[rowKey] ?? {}
+    const computedRow = recomputeCalculatedForRow(row, columns)
+    onChange({ ...current, [rowKey]: computedRow })
   }
 
   const removeRow = (rowKey: string) => {
@@ -110,8 +166,13 @@ export function ConsumptionTableField(props: FieldProps) {
 
   const handleCellChange = (rowKey: string, colKey: string, value: string) => {
     const current = ensureSectionData()
-    const nextRow: Row = { ...(current[rowKey] || {}), [colKey]: Number(value) }
-    onChange({ ...current, [rowKey]: nextRow })
+    const editedRow: Row = {
+      ...(current[rowKey] || {}),
+      [colKey]: Number(value),
+    }
+    const computedRow = recomputeCalculatedForRow(editedRow, columns)
+
+    onChange({ ...current, [rowKey]: computedRow })
   }
 
   const handleCellBlur = (
@@ -129,18 +190,32 @@ export function ConsumptionTableField(props: FieldProps) {
         (max !== undefined && currentValue > max))
     ) {
       alert(`Value for ${colKey} is out of range. min: ${min}, max: ${max}`)
-      const updatedRow: Row = { ...(formData[rowKey] || {}) }
+      const updatedRow: Row = { ...(current[rowKey] || {}) }
 
       updatedRow[colKey] = undefined
-      onChange({ ...formData, [rowKey]: updatedRow })
+      onChange({ ...current, [rowKey]: updatedRow })
     }
   }
 
+  const getCellValue = (rowKey: string, col: ColMeta) => {
+    const current = ensureSectionData()
+    const row = current[rowKey] || {}
+
+    if (col.isCalculated && col.formula) {
+      const val = evaluateFormula(col.formula, row as Record<string, unknown>)
+
+      return Number.isFinite(val as number) ? (val as number) : ''
+    }
+
+    return row[col.key] ?? ''
+  }
+
   const totalsByColumn = columns.map((col) =>
-    selectedKeys.reduce(
-      (sum, rowKey) => sum + Number(formData[rowKey]?.[col.key] ?? 0),
-      0
-    )
+    selectedKeys.reduce((sum, rowKey) => {
+      const v = getCellValue(rowKey, col)
+
+      return sum + (typeof v === 'number' ? v : 0)
+    }, 0)
   )
 
   return (
@@ -209,26 +284,42 @@ export function ConsumptionTableField(props: FieldProps) {
 
                   {columns.map((col) => (
                     <td key={col.key} style={{ padding: 6 }}>
-                      <input
-                        type="number"
-                        value={formData[rowKey]?.[col.key] ?? ''}
-                        onChange={(e) =>
-                          handleCellChange(rowKey, col.key, e.target.value)
-                        }
-                        onBlur={() =>
-                          handleCellBlur(rowKey, col.key, col.min, col.max)
-                        }
-                        disabled={!canEdit}
-                        min={col.min}
-                        max={col.max}
-                        step={0.1}
-                        style={{
-                          width: '100%',
-                          padding: 6,
-                          border: '1px solid #cbd5e1',
-                          borderRadius: 8,
-                        }}
-                      />
+                      {col.isCalculated ? (
+                        <input
+                          type="number"
+                          value={getCellValue(rowKey, col)}
+                          readOnly
+                          disabled
+                          style={{
+                            width: '100%',
+                            padding: 6,
+                            border: '1px solid #cbd5e1',
+                            borderRadius: 8,
+                            background: '#f8fafc',
+                          }}
+                        />
+                      ) : (
+                        <input
+                          type="number"
+                          value={getCellValue(rowKey, col)}
+                          onChange={(e) =>
+                            handleCellChange(rowKey, col.key, e.target.value)
+                          }
+                          onBlur={() =>
+                            handleCellBlur(rowKey, col.key, col.min, col.max)
+                          }
+                          disabled={!canEdit}
+                          min={col.min}
+                          max={col.max}
+                          step={0.1}
+                          style={{
+                            width: '100%',
+                            padding: 6,
+                            border: '1px solid #cbd5e1',
+                            borderRadius: 8,
+                          }}
+                        />
+                      )}
                     </td>
                   ))}
 

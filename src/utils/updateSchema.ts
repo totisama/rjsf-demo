@@ -1,5 +1,6 @@
 import type { RJSFSchema } from '@rjsf/utils'
 import type { JSONObject, JSONValue } from '../types'
+import { getValueByPath } from './getValueByPath'
 
 type ShowWhenRule = {
   field: string
@@ -8,7 +9,7 @@ type ShowWhenRule = {
   exist?: boolean
 }
 
-type ShowWhen = ShowWhenRule[] | string
+export type ShowWhen = ShowWhenRule[] | string
 
 type ShowWhenSelectedItem = {
   value: JSONValue
@@ -16,24 +17,6 @@ type ShowWhenSelectedItem = {
   required?: boolean
 }
 type ShowWhenSelected = ShowWhenSelectedItem[]
-
-function getValueByPath(obj: unknown, path: string): unknown {
-  if (!obj || !path) {
-    return undefined
-  }
-
-  return path.split('.').reduce<unknown>((acc, key) => {
-    if (
-      acc !== null &&
-      typeof acc === 'object' &&
-      key in (acc as Record<string, unknown>)
-    ) {
-      return (acc as Record<string, unknown>)[key]
-    }
-
-    return undefined
-  }, obj)
-}
 
 function deletePropertyByPath(obj: unknown, path: string): void {
   if (!obj || !path || typeof obj !== 'object') {
@@ -55,7 +38,7 @@ function deletePropertyByPath(obj: unknown, path: string): void {
   }
 }
 
-function ruleMatches(formData: JSONObject, rule: ShowWhenRule): boolean {
+export function ruleMatches(formData: JSONObject, rule: ShowWhenRule): boolean {
   const val = getValueByPath(formData, rule.field)
 
   if ('equals' in rule) {
@@ -71,7 +54,10 @@ function ruleMatches(formData: JSONObject, rule: ShowWhenRule): boolean {
   return false
 }
 
-function evaluateShowWhen(formData: JSONObject, rules?: ShowWhen): boolean {
+export function evaluateShowWhen(
+  formData: JSONObject,
+  rules?: ShowWhen
+): boolean {
   if (!rules) {
     return true
   }
@@ -83,7 +69,10 @@ function evaluateShowWhen(formData: JSONObject, rules?: ShowWhen): boolean {
   return rules.some((rule) => ruleMatches(formData, rule))
 }
 
-function evaluateShowWhenAnd(formData: JSONObject, rules?: ShowWhen): boolean {
+export function evaluateShowWhenAnd(
+  formData: JSONObject,
+  rules?: ShowWhen
+): boolean {
   if (!rules) {
     return true
   }

@@ -49,6 +49,9 @@ export const DynamicForm = ({
   )
   const initialFormData =
     Object.keys(formData ?? {}).length > 0 ? formData : preparedDefaults
+  const [liveFormData, setLiveFormData] = useState<JSONObject>(
+    initialFormData as JSONObject
+  )
   const [dynamicSchema, setDynamicSchema] = useState<RJSFSchema>(parsedSchema)
   const [dynamicUiSchema, setDynamicUiSchema] = useState<UiSchema>(() =>
     computeUiSchema(parsedSchema)
@@ -62,15 +65,20 @@ export const DynamicForm = ({
     )
     setDynamicSchema(updatedSchema)
     setDynamicUiSchema(computeUiSchema(updatedSchema))
+    setLiveFormData(cleaned)
 
     onChange?.(cleaned)
   }
 
   useEffect(() => {
     const dataObj = (formData ?? {}) as JSONObject
-    const { schema: updatedSchema } = updateSchema(parsedSchema, dataObj)
+    const { schema: updatedSchema, formData: cleaned } = updateSchema(
+      parsedSchema,
+      dataObj
+    )
     setDynamicSchema(updatedSchema)
     setDynamicUiSchema(computeUiSchema(updatedSchema))
+    setLiveFormData(cleaned)
   }, [parsedSchema, formData])
 
   return (
@@ -90,6 +98,7 @@ export const DynamicForm = ({
           emptyObjectFields: 'skipEmptyDefaults',
           constAsDefaults: 'skipOneOf',
         }}
+        formContext={{ rootFormData: liveFormData }}
         showErrorList="bottom"
         onChange={handleChange}
         onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
