@@ -105,6 +105,7 @@ export const DynamicForm = ({
         showErrorList="bottom"
         onChange={handleChange}
         onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
+        noHtml5Validate={true}
       />
       <DebugPanel data={initialFormData} />
     </>

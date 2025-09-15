@@ -54,6 +54,7 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
           break
 
         case 'fullVoyageNumber':
+          leafUiSchema['ui:field'] = 'FullVoyageNumber'
           break
         case 'percentageOf':
         case 'requiredSpeed':

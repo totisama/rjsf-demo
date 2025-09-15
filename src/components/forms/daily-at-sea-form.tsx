@@ -10,6 +10,7 @@ import { RadioWidget } from '../widgets/radio-widget'
 import { BunkerTableField } from '../fields/bunker-table-field'
 import { SumTimeTotalField } from '../fields/sum-time-total-field'
 import dailyAtSeaSchema from '../../mocks/dailyAtSeaSchema.json'
+import { FullVoyageNumberField } from '../fields/full-voyage-number-field'
 
 export const DailyAtSeaForm = () => {
   const [formData, setFormData] = useState<Record<string, unknown>>({})
@@ -31,6 +32,7 @@ export const DailyAtSeaForm = () => {
           Position: PositionField,
           BunkerTable: BunkerTableField,
           SumTimeTotal: SumTimeTotalField,
+          FullVoyageNumber: FullVoyageNumberField,
         }}
         widgets={{
           Email: EmailWidget,
