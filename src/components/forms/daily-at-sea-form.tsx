@@ -8,6 +8,7 @@ import { DateTimeUtcField } from '../fields/date-time-utc-field'
 import { TextareaWidget } from '../widgets/textarea-widget'
 import { RadioWidget } from '../widgets/radio-widget'
 import { BunkerTableField } from '../fields/bunker-table-field'
+import { SumTimeTotalField } from '../fields/sum-time-total-field'
 import dailyAtSeaSchema from '../../mocks/dailyAtSeaSchema.json'
 
 export const DailyAtSeaForm = () => {
@@ -29,6 +30,7 @@ export const DailyAtSeaForm = () => {
           DateTimeUtc: DateTimeUtcField,
           Position: PositionField,
           BunkerTable: BunkerTableField,
+          SumTimeTotal: SumTimeTotalField,
         }}
         widgets={{
           Email: EmailWidget,

@@ -7,10 +7,10 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
     if (!node || typeof node !== 'object') return
 
     const uiType = (node as { uiType?: string }).uiType
+    const sumTimeFormula = (node as { sumTimeFormula?: unknown }).sumTimeFormula
+    const leafUiSchema: UiSchema = {}
 
     if (uiType) {
-      const leafUiSchema: UiSchema = {}
-
       switch (uiType) {
         case 'consumption':
           leafUiSchema['ui:field'] = 'ConsumptionTable'
@@ -68,20 +68,24 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
         case 'port':
           break
       }
+    }
 
-      if (Object.keys(leafUiSchema).length > 0) {
-        setUiAtPath(uiSchema, path, leafUiSchema)
-      }
+    if (typeof sumTimeFormula === 'string') {
+      leafUiSchema['ui:field'] = 'SumTimeTotal'
+    }
+
+    if (Object.keys(leafUiSchema).length > 0) {
+      setUiAtPath(uiSchema, path, leafUiSchema)
     }
 
     if (node.type === 'object' && node.properties) {
-      Object.entries(node.properties).forEach(
-        ([propertyKey, propertySchema]) => {
-          if (propertySchema && typeof propertySchema === 'object') {
-            visit(propertySchema as RJSFSchema, [...path, propertyKey])
-          }
+      for (const [propertyKey, propertySchema] of Object.entries(
+        node.properties
+      )) {
+        if (propertySchema && typeof propertySchema === 'object') {
+          visit(propertySchema as RJSFSchema, [...path, propertyKey])
         }
-      )
+      }
     }
 
     if (node.type === 'array' && node.items && typeof node.items === 'object') {

@@ -98,7 +98,10 @@ export const DynamicForm = ({
           emptyObjectFields: 'skipEmptyDefaults',
           constAsDefaults: 'skipOneOf',
         }}
-        formContext={{ rootFormData: liveFormData }}
+        formContext={{
+          rootFormData: liveFormData,
+          fullSchema: dynamicSchema,
+        }}
         showErrorList="bottom"
         onChange={handleChange}
         onSubmit={(e: IChangeEvent) => onSubmit?.(e.formData)}
