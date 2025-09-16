@@ -61,7 +61,15 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
         case 'requiredSpeed':
         case 'speedCalculator':
         case 'timeDifference':
+          leafUiSchema['ui:readonly'] = true
+          break
         case 'totalAeRunning':
+          leafUiSchema['ui:field'] = 'TotalAeRunning'
+          leafUiSchema['ui:options'] = {
+            sourcePath: 'utilization.auxiliaryCompoundFieldName',
+            keyPattern: 'EnergyProduced$',
+          }
+          break
         case 'oneLine':
         case 'calculated':
           leafUiSchema['ui:readonly'] = true

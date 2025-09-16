@@ -17,7 +17,6 @@ export const EmailWidget = ({
       placeholder={placeholder as string}
       disabled={disabled || readonly}
       style={{
-        width: '100%',
         padding: 8,
         border: '1px solid #cbd5e1',
         borderRadius: 6,

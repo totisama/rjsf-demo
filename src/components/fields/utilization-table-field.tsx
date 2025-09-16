@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { FieldProps, RJSFSchema } from '@rjsf/utils'
 import { hhmmToMinutes, minutesToHHMM } from '../../utils/sumTime'
+import { getValueByPath } from '../../utils/getValueByPath'
 
 type ColMeta = { key: string; label: string; sumTimeFormula?: string }
 
@@ -15,20 +16,6 @@ type SingleCellProps = {
   handleCellChange: (rowKey: string, colKey: string, value: string) => void
   ensureData: () => Record<string, Record<string, unknown>>
   onChange: (next: unknown) => void
-}
-
-function get(obj: unknown, path: string): unknown {
-  if (!obj || typeof obj !== 'object') return undefined
-  return path.split('.').reduce<unknown>((acc, key) => {
-    if (
-      acc &&
-      typeof acc === 'object' &&
-      key in (acc as Record<string, unknown>)
-    ) {
-      return (acc as Record<string, unknown>)[key]
-    }
-    return undefined
-  }, obj)
 }
 
 export function UtilizationTableField(props: FieldProps) {
@@ -134,7 +121,7 @@ export function UtilizationTableField(props: FieldProps) {
 
     const minutes = tokens.reduce((sum, token) => {
       const fullPath = `${sectionKey}.${token}`
-      const v = get({ [sectionKey]: formData }, fullPath)
+      const v = getValueByPath({ [sectionKey]: formData }, fullPath)
 
       return sum + hhmmToMinutes(v)
     }, 0)
