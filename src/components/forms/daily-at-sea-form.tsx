@@ -11,6 +11,7 @@ import { BunkerTableField } from '../fields/bunker-table-field'
 import { SumTimeTotalField } from '../fields/sum-time-total-field'
 import dailyAtSeaSchema from '../../mocks/dailyAtSeaSchema.json'
 import { FullVoyageNumberField } from '../fields/full-voyage-number-field'
+import { UtilizationTableField } from '../fields/utilization-table-field'
 
 export const DailyAtSeaForm = () => {
   const [formData, setFormData] = useState<Record<string, unknown>>({})
@@ -33,6 +34,7 @@ export const DailyAtSeaForm = () => {
           BunkerTable: BunkerTableField,
           SumTimeTotal: SumTimeTotalField,
           FullVoyageNumber: FullVoyageNumberField,
+          UtilizationTable: UtilizationTableField,
         }}
         widgets={{
           Email: EmailWidget,

@@ -16,6 +16,7 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
           leafUiSchema['ui:field'] = 'ConsumptionTable'
           break
         case 'utilizationTable':
+          leafUiSchema['ui:field'] = 'UtilizationTable'
           break
         case 'bunkerTable':
           leafUiSchema['ui:field'] = 'BunkerTable'
