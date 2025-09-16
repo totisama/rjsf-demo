@@ -23,28 +23,14 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
           break
         case 'tankSummaryTable':
           break
-
         case 'dateTimeUtc':
           leafUiSchema['ui:field'] = 'DateTimeUtc'
           break
-        case 'ETADateTimeUtc':
-          break
-        case 'time':
-          break
-
         case 'position':
           leafUiSchema['ui:field'] = 'Position'
           break
-
-        case 'section':
-        case 'conditionalSection':
-        case 'additionalSection':
-          break
-
         case 'radio':
           leafUiSchema['ui:widget'] = 'Radio'
-          break
-        case 'checkbox':
           break
         case 'email':
           leafUiSchema['ui:widget'] = 'Email'
@@ -53,15 +39,8 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
         case 'textarea':
           leafUiSchema['ui:widget'] = 'Textarea'
           break
-
         case 'fullVoyageNumber':
           leafUiSchema['ui:field'] = 'FullVoyageNumber'
-          break
-        case 'percentageOf':
-        case 'requiredSpeed':
-        case 'speedCalculator':
-        case 'timeDifference':
-          leafUiSchema['ui:readonly'] = true
           break
         case 'totalAeRunning':
           leafUiSchema['ui:field'] = 'TotalAeRunning'
@@ -69,13 +48,6 @@ export function computeUiSchema(schema: RJSFSchema): UiSchema {
             sourcePath: 'utilization.auxiliaryCompoundFieldName',
             keyPattern: 'EnergyProduced$',
           }
-          break
-        case 'oneLine':
-        case 'calculated':
-          leafUiSchema['ui:readonly'] = true
-          break
-
-        case 'port':
           break
       }
     }
