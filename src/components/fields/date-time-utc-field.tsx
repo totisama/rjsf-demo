@@ -39,42 +39,49 @@ export const DateTimeUtcField = ({
   }
 
   return (
-    <div style={{ display: 'flex', gap: 8 }}>
-      <label>Date</label>
-      <input
-        type="date"
-        value={data.date ?? ''}
-        onChange={(e) => handleChange('date', e.target.value)}
-        disabled={!canEdit}
-      />
-      <label>Time (hh:mm):</label>
-      <input
-        type="time"
-        step={60}
-        value={data.time ?? ''}
-        onChange={(e) => handleChange('time', e.target.value)}
-        disabled={!canEdit}
-      />
-      <label>UTC offset:</label>
-      <select
-        value={data.utc ?? ''}
-        onChange={(e) => handleChange('utc', e.target.value)}
-        disabled={!canEdit}
-      >
-        <option value="" />
-        {utcOptions.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      <button
-        type="button"
-        onClick={() => onChange(undefined)}
-        disabled={!canEdit}
-      >
-        Clear
-      </button>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {schema.title && (
+        <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>
+          {schema.title}
+        </label>
+      )}
+      <div>
+        <label>Date</label>
+        <input
+          type="date"
+          value={data.date ?? ''}
+          onChange={(e) => handleChange('date', e.target.value)}
+          disabled={!canEdit}
+        />
+        <label>Time (hh:mm):</label>
+        <input
+          type="time"
+          step={60}
+          value={data.time ?? ''}
+          onChange={(e) => handleChange('time', e.target.value)}
+          disabled={!canEdit}
+        />
+        <label>UTC offset:</label>
+        <select
+          value={data.utc ?? ''}
+          onChange={(e) => handleChange('utc', e.target.value)}
+          disabled={!canEdit}
+        >
+          <option value="" />
+          {utcOptions.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          onClick={() => onChange(undefined)}
+          disabled={!canEdit}
+        >
+          Clear
+        </button>
+      </div>
     </div>
   )
 }
